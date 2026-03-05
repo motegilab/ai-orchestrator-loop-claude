@@ -1,0 +1,43 @@
+{
+  "project": "ai-orchestrator-loop",
+  "version": "1.0.0",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Phase 1: Hook基盤構築",
+      "status": "in_progress",
+      "waves": [
+        {
+          "id": "W1-1",
+          "title": "環境セットアップ",
+          "tasks": [
+            {"id": "T1", "title": "Claude Code CLI インストール", "status": "pending"},
+            {"id": "T2", "title": "make setup 実行", "status": "pending"},
+            {"id": "T3", "title": "GOチェックリスト §8 全項目クリア", "status": "pending"}
+          ]
+        },
+        {
+          "id": "W1-2",
+          "title": "Hookの動作確認",
+          "tasks": [
+            {"id": "T4", "title": "SessionStart Hook動作確認", "status": "pending"},
+            {"id": "T5", "title": "Stop Hook動作確認", "status": "pending"},
+            {"id": "T6", "title": "SSOTゲート動作確認（SSOT.md書き込みブロック）", "status": "pending"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Phase 2: Skills & 品質ゲート",
+      "status": "pending",
+      "waves": []
+    },
+    {
+      "id": "M3",
+      "title": "Phase 3: テンプレ化 & マルチPJ展開",
+      "status": "pending",
+      "waves": []
+    }
+  ]
+}

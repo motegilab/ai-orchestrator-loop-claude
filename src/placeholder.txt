@@ -1,0 +1,8 @@
+This directory (src/) is reserved for project-specific source code.
+
+When using this template for a new project:
+- Replace this file with your actual source code
+- Update CLAUDE.md to describe the technology stack and key commands
+- Update SSOT.md with project-specific rules and scope
+
+This template itself has no source code to build — it is a scaffolding and orchestration system.

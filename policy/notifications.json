@@ -1,0 +1,29 @@
+{
+  "_comment": "Notification policy. Discord/Slack integration is a future feature (v2+). Do NOT store webhook URLs here — use environment variables.",
+  "version": "1.0",
+  "enabled": false,
+
+  "channels": ["none"],
+  "_comment_channels": "Future values: 'discord', 'slack'. Set via NOTIFY_CHANNEL env var.",
+
+  "triggers": {
+    "loop_end": true,
+    "loop_blocked": true,
+    "loop_failed": true,
+    "loop_success": false
+  },
+
+  "quality_warning": {
+    "enabled": false,
+    "threshold_consecutive_failures": 3
+  },
+
+  "loop_end_reasons": [
+    "max_auto_loops_reached",
+    "blocked_by_ssot_gate",
+    "human_input_required",
+    "task_completed"
+  ],
+
+  "_setup_instructions": "To enable: set NOTIFY_CHANNEL=discord and DISCORD_WEBHOOK_URL=<url> as environment variables. Never commit webhook URLs."
+}

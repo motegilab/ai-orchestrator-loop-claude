@@ -1,0 +1,17 @@
+# ランタイム生成物はgit管理外
+runtime/**
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# ローカル設定
+.claude/settings.local.json
+.env
+*.secret
+*.key
