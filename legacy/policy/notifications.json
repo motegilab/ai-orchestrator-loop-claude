@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "channels": [
+    "none"
+  ],
+  "quality_warning": {
+    "enabled": true,
+    "metric": "prompt_eval.score",
+    "warn_if_below": 0.85,
+    "warn_if_drop_ge": 0.05,
+    "window": 3
+  },
+  "loop_end": {
+    "enabled": true,
+    "reasons": [
+      "max_iters_reached",
+      "blocked_user_action_required",
+      "completed_no_op"
+    ]
+  }
+}

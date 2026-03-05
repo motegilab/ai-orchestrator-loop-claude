@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude-First Orchestrator Loop — セットアップガイド</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root {
+  --bg:#0d1117;--s1:#161b22;--s2:#1c2128;--bd:#21262d;--bd2:#30363d;
+  --or:#f97316;--bl:#3b82f6;--pu:#a78bfa;--gr:#3fb950;--ye:#d29922;--re:#f85149;
+  --tx:#c9d1d9;--mu:#8b949e;--hd:#e6edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--tx);line-height:1.75;font-size:14px;}
+.wrap{max-width:900px;margin:0 auto;padding:48px 40px 100px;}
+
+/* HEADER */
+.hdr{border-bottom:1px solid var(--bd);padding-bottom:32px;margin-bottom:48px;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--or);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;}
+.htitle{font-size:28px;font-weight:700;color:var(--hd);margin-bottom:8px;line-height:1.3;}
+.hsub{color:var(--mu);font-size:13px;font-weight:300;}
+
+/* SECTION */
+.sec{margin-bottom:56px;}
+.sec-num{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--or);background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.25);border-radius:99px;padding:2px 10px;margin-bottom:10px;}
+h2{font-size:20px;font-weight:700;color:var(--hd);border-bottom:1px solid var(--bd);padding-bottom:10px;margin-bottom:20px;}
+h3{font-size:15px;font-weight:700;color:var(--hd);margin:24px 0 8px;}
+h4{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bl);margin:16px 0 6px;letter-spacing:.05em;}
+p{margin-bottom:10px;font-weight:300;}
+strong{color:var(--hd);font-weight:700;}
+ul,ol{margin:8px 0 12px 20px;font-weight:300;}
+li{padding:3px 0;}
+
+/* CODE */
+.code{background:#0d1117;border:1px solid var(--bd2);border-radius:6px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin:10px 0;white-space:pre;}
+.code .c{color:var(--mu);}
+.code .k{color:var(--pu);}
+.code .s{color:var(--gr);}
+.code .p{color:var(--or);}
+.code .step{color:var(--bl);font-weight:600;}
+.code .warn{color:var(--ye);}
+
+/* CALLOUT */
+.cl{border:1px solid var(--bd);border-left:3px solid var(--or);background:var(--s2);border-radius:6px;padding:14px 18px;margin:14px 0;font-size:13px;}
+.cl.bl{border-left-color:var(--bl);}
+.cl.gr{border-left-color:var(--gr);}
+.cl.re{border-left-color:var(--re);}
+.cl.pu{border-left-color:var(--pu);}
+.cl .clt{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--or);font-weight:700;margin-bottom:5px;}
+.cl.bl .clt{color:var(--bl);}
+.cl.gr .clt{color:var(--gr);}
+.cl.re .clt{color:var(--re);}
+.cl.pu .clt{color:var(--pu);}
+
+/* CARD */
+.cards{display:grid;gap:12px;margin:16px 0;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:1fr 1fr 1fr;}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:16px;}
+.card h4{font-size:13px;font-weight:700;color:var(--hd);margin:0 0 6px;font-family:inherit;letter-spacing:0;}
+.card p{font-size:12px;color:var(--mu);margin:0;}
+.card .tag{font-family:'JetBrains Mono',monospace;font-size:9px;float:right;padding:2px 6px;border-radius:99px;background:rgba(249,115,22,.1);color:var(--or);border:1px solid rgba(249,115,22,.25);}
+.card .tag.bl{background:rgba(59,130,246,.1);color:var(--bl);border-color:rgba(59,130,246,.25);}
+.card .tag.gr{background:rgba(63,185,80,.1);color:var(--gr);border-color:rgba(63,185,80,.25);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0;}
+th{background:var(--s2);color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-align:left;padding:8px 12px;border-bottom:1px solid var(--bd2);}
+td{padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--s2);padding:1px 5px;border-radius:3px;color:var(--pu);}
+
+/* STEP LIST */
+.steps{list-style:none;padding:0;margin:16px 0;}
+.steps li{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.steps .sn{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--or);color:#000;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.steps .sc{flex:1;}
+.steps .sc strong{display:block;color:var(--hd);margin-bottom:4px;}
+.steps .sc p{margin:0;font-size:13px;}
+
+hr{border:none;border-top:1px solid var(--bd);margin:40px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="eyebrow">Claude-First AI Orchestrator Loop</div>
+  <div class="htitle">セットアップガイド<br>— 5つの問いへの完全回答</div>
+  <div class="hsub">事前決定事項 / 環境構築 / 初回プロンプト / 成果物 / 追加必要事項</div>
+</div>
+
+<!-- Q1: 事前決定事項 -->
+<div class="sec">
+  <div class="sec-num">Q1</div>
+  <h2>事前に決めておくべきこと</h2>
+
+  <div class="cl gr">
+    <div class="clt">結論</div>
+    <strong>VS Code + Claude Code CLI（ターミナル）</strong>が最適です。Cursor は不要になります。
+  </div>
+
+  <h3>推奨環境スタック（確定）</h3>
+  <div class="cards g2">
+    <div class="card">
+      <div class="tag gr">採用</div>
+      <h4>🖥️ VS Code</h4>
+      <p>コード閲覧・Git操作・ファイル管理。無料。Claude Code拡張機能もある。</p>
+    </div>
+    <div class="card">
+      <div class="tag gr">採用・主役</div>
+      <h4>⚡ Claude Code CLI</h4>
+      <p>ループのエンジン。ターミナル（VS Code内蔵）から実行。Hookシステムが心臓部。</p>
+    </div>
+    <div class="card">
+      <div class="tag">代替可</div>
+      <h4>📝 Cursor</h4>
+      <p>引き続き使えるが必須ではない。Claude CodeがCursorの役割を多くカバーする。</p>
+    </div>
+    <div class="card">
+      <div class="tag">将来</div>
+      <h4>🤖 Cowork</h4>
+      <p>デスクトップのファイル・タスク管理自動化。Claude Maxに含まれる。Phase 3以降で検討。</p>
+    </div>
+  </div>
+
+  <h3>サブスクリプション（必須決定）</h3>
+  <table>
+    <thead><tr><th>プラン</th><th>月額</th><th>Claude Code</th><th>推奨度</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Pro</strong></td><td>$20/月</td><td>✅ 利用可</td><td>最初の1ヶ月のお試しに</td></tr>
+      <tr><td><strong>Max 5x</strong></td><td>$100/月</td><td>✅ 5倍制限</td><td><strong>★推奨</strong> — 自動ループ運用に十分</td></tr>
+      <tr><td><strong>Max 20x</strong></td><td>$200/月</td><td>✅ 20倍制限</td><td>複数PJ同時進行・ヘビーユーザー向け</td></tr>
+    </tbody>
+  </table>
+  <div class="cl">
+    <div class="clt">判断基準</div>
+    今はProで始めてみて、制限に当たったらMaxに上げるのが無難。自動ループは1セッションのトークン消費が多いのでMax 5xが安心。
+  </div>
+
+  <h3>OS別の注意事項</h3>
+  <table>
+    <thead><tr><th>OS</th><th>推奨ターミナル</th><th>注意点</th></tr></thead>
+    <tbody>
+      <tr><td><strong>macOS</strong></td><td>標準ターミナル / iTerm2</td><td>最もスムーズ。追加設定ほぼ不要</td></tr>
+      <tr><td><strong>Windows</strong></td><td>Git Bash または WSL2</td><td>Git for Windowsを先にインストール。PowerShellでも動作可</td></tr>
+      <tr><td><strong>Linux</strong></td><td>標準bash</td><td>問題なし</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q2: 事前に人間が作る環境 -->
+<div class="sec">
+  <div class="sec-num">Q2</div>
+  <h2>事前に人間が作るべき環境</h2>
+
+  <ol class="steps">
+    <li>
+      <div class="sn">1</div>
+      <div class="sc">
+        <strong>Claude アカウント & サブスクリプション</strong>
+        <p>claude.ai にアクセスして Pro または Max プランを契約する。<br>→ <code>https://claude.ai/upgrade</code></p>
+      </div>
+    </li>
+    <li>
+      <div class="sn">2</div>
+      <div class="sc">
+        <strong>Git インストール</strong>
+        <p>macOS: <code>brew install git</code> または Xcode Command Line Tools<br>
+        Windows: Git for Windows（<code>https://git-scm.com</code>）をインストール</p>
+      </div>
+    </li>
+    <li>
+      <div class="sn">3</div>
+      <div class="sc">
+        <strong>GitHub アカウント & リポジトリ作成</strong>
+        <p>github.com でアカウント作成済みであればOK。<br>
+        新規リポジトリ名: <code>ai-orchestrator-loop</code>（または任意名）</p>
+      </div>
+    </li>
+    <li>
+      <div class="sn">4</div>
+      <div class="sc">
+        <strong>Python 3.9以上 インストール確認</strong>
+        <p>ターミナルで <code>python3 --version</code> を実行。3.9未満なら <code>https://python.org</code> からインストール。</p>
+      </div>
+    </li>
+    <li>
+      <div class="sn">5</div>
+      <div class="sc">
+        <strong>VS Code インストール（推奨）</strong>
+        <p><code>https://code.visualstudio.com</code> からインストール。<br>
+        拡張機能: <em>Claude for VS Code</em>（任意）</p>
+      </div>
+    </li>
+    <li>
+      <div class="sn">6</div>
+      <div class="sc">
+        <strong>Claude Code CLI インストール</strong>
+        <p>ターミナルで以下を実行（ネイティブインストーラー推奨）:</p>
+        <div class="code"><span class="c"># macOS / Linux</span>
+curl -fsSL https://claude.ai/install.sh | bash
+source ~/.bashrc  <span class="c"># または source ~/.zshrc</span>
+claude --version  <span class="c"># 確認</span>
+
+<span class="c"># Windows (PowerShell)</span>
+irm https://claude.ai/install.ps1 | iex
+claude --version</div>
+      </div>
+    </li>
+    <li>
+      <div class="sn">7</div>
+      <div class="sc">
+        <strong>Claude Code にログイン</strong>
+        <p>以下を実行してブラウザでauth:</p>
+        <div class="code">claude  <span class="c"># 初回起動でログインプロンプトが出る</span>
+<span class="c"># ブラウザが開くので claude.ai アカウントでログイン</span></div>
+      </div>
+    </li>
+    <li>
+      <div class="sn">8</div>
+      <div class="sc">
+        <strong>ローカルフォルダの準備（Google Drive 利用中の場合）</strong>
+        <p>Google Drive 同期フォルダ内には<strong>置かないことを推奨</strong>。<br>
+        理由: Hookが頻繁にファイル書き込みをするため、Drive同期と競合する可能性がある。<br>
+        推奨場所: <code>~/projects/ai-orchestrator-loop/</code></p>
+        <div class="code">mkdir -p ~/projects
+cd ~/projects
+git clone https://github.com/YOUR/ai-orchestrator-loop.git
+<span class="c"># または今回ダウンロードしたファイルをここに置く</span></div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cl re">
+    <div class="clt">Google Drive について</div>
+    コードリポジトリ本体は ~/projects/ に置く。<strong>runtime/ フォルダ（実行生成物）だけを Google Drive でバックアップしたい場合</strong>は、<code>runtime/</code> にシンボリックリンクを作る方法がある。ただし v1 では不要。
+  </div>
+</div>
+
+<!-- Q3: 初回プロンプト -->
+<div class="sec">
+  <div class="sec-num">Q3</div>
+  <h2>環境設定後、最初に打つべきプロンプト</h2>
+
+  <h3>Step 1: セットアップ（1回だけ）</h3>
+  <div class="code"><span class="c"># プロジェクトフォルダに移動</span>
+cd ~/projects/ai-orchestrator-loop
+
+<span class="c"># 初回セットアップ（環境チェック + hashの初期化）</span>
+make setup</div>
+
+  <h3>Step 2: 最初の loop-start</h3>
+  <div class="code">make loop-start</div>
+
+  <p>これだけでClaudeが起動し、<strong>SessionStart Hookが自動的に</strong>環境チェックとCLAUDE.mdの内容を読んで、tasks/milestones.jsonの最初のタスクを実行し始めます。</p>
+
+  <h3>もし make が使えない環境の場合（直接 claude コマンド）</h3>
+  <div class="code">claude --add-dir ~/.claude/skills \
+       --allowedTools "Read,Write,Edit,MultiEdit,Bash,Task" \
+       -p "SSOT.mdとCLAUDE.mdを読んで、tasks/milestones.jsonの最初のタスクを実行してください。"</div>
+
+  <h3>初回以降のプロンプト（ループ中）</h3>
+  <div class="cl bl">
+    <div class="clt">基本</div>
+    ループが回り始めたら、基本的に人間は何も打たない。<br>
+    Claudeが止まったら → <code>make loop-start</code> を再度実行するだけ。<br>
+    前回の続きは next_session.md を通じて自動注入される。
+  </div>
+
+  <table>
+    <thead><tr><th>状況</th><th>打つコマンド</th></tr></thead>
+    <tbody>
+      <tr><td>通常のループ再開</td><td><code>make loop-start</code></td></tr>
+      <tr><td>前回の状態確認</td><td><code>make loop-status</code></td></tr>
+      <tr><td>特定タスクを指示したい</td><td><code>claude -p "tasks/milestones.jsonのT3を実行して"</code></td></tr>
+      <tr><td>SSOTを手動更新した後</td><td><code>python3 .claude/hooks/ssot_gate.py --update-hash</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q4: 作成済み成果物 -->
+<div class="sec">
+  <div class="sec-num">Q4</div>
+  <h2>今回作成した成果物（ダウンロード可能）</h2>
+
+  <div class="cl gr">
+    <div class="clt">含まれるもの</div>
+    リポジトリの全ファイルをzipにまとめました。解凍して GitHub に push するだけで使えます。
+  </div>
+
+  <table>
+    <thead><tr><th>ファイル</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td><code>SSOT.md</code></td><td>設計の正本（Claude-first v1.0）</td></tr>
+      <tr><td><code>CLAUDE.md</code></td><td>Claudeへの指示・記憶（200行以内）</td></tr>
+      <tr><td><code>Makefile</code></td><td>入口3コマンド（loop-start/stop/status）</td></tr>
+      <tr><td><code>.gitignore</code></td><td>runtime/** を除外</td></tr>
+      <tr><td><code>.claude/settings.json</code></td><td>全Hook定義（5種類）</td></tr>
+      <tr><td><code>.claude/hooks/on_session_start.py</code></td><td>SessionStart Hook — 環境チェック+コンテキスト注入</td></tr>
+      <tr><td><code>.claude/hooks/on_stop.py</code></td><td>Stop Hook — レポート生成+next_session.md作成</td></tr>
+      <tr><td><code>.claude/hooks/ssot_gate.py</code></td><td>SSOTゲート（SSOT.md書き込みブロック）</td></tr>
+      <tr><td><code>.claude/hooks/post_tool_quality.py</code></td><td>PostToolUse Hook — 監査ログ+Python構文チェック</td></tr>
+      <tr><td><code>.claude/skills/observe/SKILL.md</code></td><td>問題調査Skill（自動invoke）</td></tr>
+      <tr><td><code>.claude/skills/patch/SKILL.md</code></td><td>最小差分修正Skill（自動invoke）</td></tr>
+      <tr><td><code>.claude/skills/verify/SKILL.md</code></td><td>検証Skill（自動invoke）</td></tr>
+      <tr><td><code>.claude/skills/report/SKILL.md</code></td><td>レポートSkill（自動invoke）</td></tr>
+      <tr><td><code>policy/policy.json</code></td><td>ループポリシー設定</td></tr>
+      <tr><td><code>policy/ssot_integrity.json</code></td><td>SSOT整合性チェック（make setupで初期化）</td></tr>
+      <tr><td><code>tasks/milestones.json</code></td><td>タスク進行記憶（milestone > wave > task）</td></tr>
+      <tr><td><code>README.md</code></td><td>クイックスタートガイド</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q5: 追加で必要なもの -->
+<div class="sec">
+  <div class="sec-num">Q5</div>
+  <h2>追加で必要なもの（こちらで用意してください）</h2>
+
+  <h3>必須（あなたに用意いただくもの）</h3>
+  <div class="cards g2">
+    <div class="card">
+      <div class="tag gr">必須</div>
+      <h4>💳 Claude Pro or Max サブスクリプション</h4>
+      <p>claude.ai/upgrade で契約。Claude Code を使うために必要。まずは Pro ($20) で試して。</p>
+    </div>
+    <div class="card">
+      <div class="tag gr">必須</div>
+      <h4>🐙 GitHub リポジトリ</h4>
+      <p>今回の成果物を push する先のリポジトリ。テンプレートリポジトリとして設定推奨。</p>
+    </div>
+  </div>
+
+  <h3>推奨（あると便利）</h3>
+  <div class="cards g3">
+    <div class="card">
+      <div class="tag bl">推奨</div>
+      <h4>🔧 VS Code 拡張機能</h4>
+      <p>Python、GitLens、GitHub Copilot（任意）。Claude Codeと二重になるので Copilot は外してOK。</p>
+    </div>
+    <div class="card">
+      <div class="tag bl">推奨</div>
+      <h4>📦 GitHub CLI (gh)</h4>
+      <p><code>brew install gh</code>。新PJ展開時に <code>gh repo create --template</code> が使えるようになる。</p>
+    </div>
+    <div class="card">
+      <div class="tag">任意</div>
+      <h4>🌐 グローバルSkillsリポジトリ</h4>
+      <p>~/.claude/skills/ を別リポジトリで管理すると全PJで共有できる。Phase 2以降で整備推奨。</p>
+    </div>
+  </div>
+
+  <h3>最初のPJ展開ステップ（まとめ）</h3>
+  <div class="code"><span class="step"># ① 前提ツールの確認</span>
+python3 --version   <span class="c"># 3.9以上</span>
+git --version       <span class="c"># 任意バージョン</span>
+
+<span class="step"># ② Claude Code CLI インストール</span>
+curl -fsSL https://claude.ai/install.sh | bash
+source ~/.zshrc     <span class="c"># または ~/.bashrc</span>
+claude --version    <span class="c"># バージョンが表示されればOK</span>
+claude doctor       <span class="c"># 環境診断</span>
+
+<span class="step"># ③ ダウンロードしたファイルをプロジェクトに配置</span>
+mkdir -p ~/projects/ai-orchestrator-loop
+<span class="c"># zipを解凍してここに配置する</span>
+cd ~/projects/ai-orchestrator-loop
+
+<span class="step"># ④ GitHubにpush</span>
+git init
+git add .
+git commit -m "feat: Claude-first orchestrator loop v1.0"
+git remote add origin https://github.com/YOUR/ai-orchestrator-loop.git
+git push -u origin main
+
+<span class="step"># ⑤ セットアップ（初回のみ）</span>
+make setup
+<span class="c"># → Python確認 / Claude Code確認 / ssot_integrity.json初期化</span>
+
+<span class="step"># ⑥ ループ開始！</span>
+make loop-start
+<span class="c"># → SessionStart Hookが発火 → Claudeが自律的にタスクを開始する</span></div>
+
+  <div class="cl pu">
+    <div class="clt">新しいPJに展開するとき</div>
+    <ol style="margin-left:16px;line-height:2;">
+      <li><code>gh repo create NEW-PJ --template YOUR/ai-orchestrator-loop</code></li>
+      <li>CLAUDE.md をPJの内容に書き換える（目的・技術スタック・key commands）</li>
+      <li>SSOT.md をPJ固有のルールに書き換える（汎用ルールはそのままでOK）</li>
+      <li><code>python3 .claude/hooks/ssot_gate.py --update-hash</code></li>
+      <li><code>make loop-start</code></li>
+    </ol>
+  </div>
+</div>
+
+<hr>
+<p style="color:var(--mu);font-size:12px;text-align:center;">ai-orchestrator-loop Claude-first v1.0 — 2026-03-05</p>
+
+</div>
+</body>
+</html>
