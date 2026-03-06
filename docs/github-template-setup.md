@@ -8,7 +8,7 @@
 
 ```bash
 # GitHubで空のリポジトリを作成（README なし）してから:
-git remote add origin https://github.com/<YOUR_ORG>/ai-orchestrator-loop-claude.git
+git remote add origin https://github.com/motegilab/ai-orchestrator-loop-claude.git
 git branch -M main
 git push -u origin main
 ```
@@ -37,7 +37,7 @@ git push -u origin main
 
 ```bash
 gh repo create my-new-project \
-  --template <YOUR_ORG>/ai-orchestrator-loop-claude \
+  --template motegilab/ai-orchestrator-loop-claude \
   --private \
   --clone
 
@@ -63,26 +63,22 @@ make loop-start
 
 ## チェックリスト（公開前）
 
-- [ ] `git remote add origin` 設定済み
-- [ ] `git push -u origin main` 実行済み
-- [ ] GitHub Settings → Template repository にチェック
-- [ ] README.md の `YOUR_ORG` を実際のGitHub組織名/ユーザー名に修正
-- [ ] legacy/ が .gitignore で除外されている（`git ls-files legacy/` が空であること）
-- [ ] runtime/ が .gitignore で除外されている（`git ls-files runtime/` が空であること）
-- [ ] secrets やトークンが含まれていないこと（`git grep -i "token\|password\|secret" -- '*.py' '*.json' '*.md'`）
+- [x] `git remote add origin` 設定済み
+- [x] `git push -u origin main` 実行済み
+- [x] GitHub Settings → Template repository にチェック
+- [x] README.md の `YOUR_ORG` を実際のGitHub組織名/ユーザー名に修正（motegilab）
+- [x] legacy/ が .gitignore で除外されている（`git ls-files legacy/` が空であること）
+- [x] runtime/ が .gitignore で除外されている（`git ls-files runtime/` が空であること）
+- [x] secrets やトークンが含まれていないこと（`git grep` のヒットはドキュメントの説明文のみ）
 
 ---
 
 ## README の YOUR_ORG 修正
 
-[README.md](../README.md) の以下の行を実際の値に変更する:
+[README.md](../README.md) は **motegilab** / **ai-orchestrator-loop-claude** に合わせて修正済み。
 
 ```md
-# 変更前
-git clone https://github.com/YOUR_ORG/ai-orchestrator-loop.git
-gh repo create my-new-project --template YOUR_ORG/ai-orchestrator-loop
-
-# 変更後
-git clone https://github.com/<実際のorg>/ai-orchestrator-loop-claude.git
-gh repo create my-new-project --template <実際のorg>/ai-orchestrator-loop-claude
+# 現在の記載
+git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git
+gh repo create my-new-project --template motegilab/ai-orchestrator-loop-claude
 ```

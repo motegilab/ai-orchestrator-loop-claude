@@ -21,8 +21,8 @@ curl -fsSL https://claude.ai/install.sh | bash
 claude --version
 
 # 3. このリポジトリをクローン
-git clone https://github.com/YOUR_ORG/ai-orchestrator-loop.git
-cd ai-orchestrator-loop
+git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git
+cd ai-orchestrator-loop-claude
 
 # 4. セットアップ（初回のみ）
 make setup
@@ -57,7 +57,7 @@ runtime/          ← 実行生成物（git管理外）
 ## 新PJへの展開
 
 ```bash
-gh repo create my-new-project --template YOUR_ORG/ai-orchestrator-loop
+gh repo create my-new-project --template motegilab/ai-orchestrator-loop-claude
 cd my-new-project
 # CLAUDE.md と SSOT.md を PJ固有内容に書き換える
 make setup

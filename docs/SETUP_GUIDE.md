@@ -153,7 +153,7 @@ cp -r .claude/skills/report ~/.claude/skills/
 gh repo edit ai-orchestrator-loop --template
 
 # 2. 新PJを作成
-gh repo create my-new-project --template YOUR_NAME/ai-orchestrator-loop --clone
+gh repo create my-new-project --template motegilab/ai-orchestrator-loop-claude --clone
 cd my-new-project
 
 # 3. PJ固有設定を書き換える
