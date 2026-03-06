@@ -109,7 +109,7 @@
     {
       "id": "M3",
       "title": "Phase 3: テンプレ化 & マルチPJ展開",
-      "status": "pending",
+      "status": "done",
       "waves": [
         {
           "id": "W3-1",
@@ -117,7 +117,7 @@
           "tasks": [
             {"id": "T14", "title": "新PJ用SSOT作成プロンプトを docs/ に作成", "status": "done", "evidence": "run010: docs/ssot-creation-prompt.md 作成。PJ情報入力→Step1-5（SSOT/CLAUDE.md書き換え・milestones初期化・make setup・レポート）の5段階プロンプト"},
             {"id": "T15", "title": "GitHub Template リポジトリ設定", "status": "done", "evidence": "run010: .github/PR+Issueテンプレート3ファイル、docs/github-template-setup.md 作成。GitHubのUI設定手順（Settings→Template repository）とOSS公開前チェックリストを整備"},
-            {"id": "T16", "title": "Discord/Slack通知 (notifications.json + hook実装)", "status": "pending"}
+            {"id": "T16", "title": "Discord/Slack通知 (notifications.json + hook実装)", "status": "done", "evidence": "run010: notifications.json.example + on_stop.py send_discord_notification()追加。urllib.request標準ライブラリのみ使用、warn-only設計。notifications.jsonはgitignore済み"}
           ]
         }
       ]

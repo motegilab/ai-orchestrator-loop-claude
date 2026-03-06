@@ -13,6 +13,7 @@ next_session.md はメタ指示（「○○を読んで確認する」）では�
 """
 import json
 import sys
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -257,6 +258,67 @@ make loop-status
         print(f"[on_stop] WARNING: next_session.md書き込み失敗: {e}", file=sys.stderr)
 
 
+def load_notifications():
+    """notifications.json を読む（なければ None）"""
+    path = REPO_ROOT / "notifications.json"
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def send_discord_notification(record):
+    """Discord Webhook に run 結果を送信する（失敗しても warn-only）"""
+    config = load_notifications()
+    if not config:
+        return
+    discord = config.get("discord", {})
+    if not discord.get("enabled", False):
+        return
+    webhook_url = discord.get("webhook_url", "")
+    if not webhook_url or "YOUR_TOKEN" in webhook_url:
+        return
+
+    run_id = record.get("run_id", "?")
+    status = record.get("status", "?")
+    report_source = record.get("report_source", "?")
+    changed = len(record.get("files_changed", []))
+    next_task = record.get("next_task")
+    next_label = next_task["task_id"] + " — " + next_task["task_title"] if next_task else "全タスク完了"
+
+    status_icon = "✅" if status == "success" else "⚠️"
+    mention = f"<@&{discord['mention_role_id']}> " if discord.get("mention_role_id") else ""
+
+    payload = {
+        "content": f"{mention}{status_icon} **AI Orchestrator** — `{run_id}` 完了",
+        "embeds": [{
+            "color": 0x57F287 if status == "success" else 0xFEE75C,
+            "fields": [
+                {"name": "status", "value": status, "inline": True},
+                {"name": "report", "value": report_source, "inline": True},
+                {"name": "変更ファイル数", "value": str(changed), "inline": True},
+                {"name": "次タスク", "value": next_label, "inline": False},
+            ],
+        }],
+    }
+
+    try:
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            webhook_url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            if resp.status not in (200, 204):
+                print(f"[on_stop] WARNING: Discord webhook HTTP {resp.status}", file=sys.stderr)
+    except Exception as e:
+        print(f"[on_stop] WARNING: Discord webhook送信失敗: {e}", file=sys.stderr)
+
+
 def main():
     try:
         raw = sys.stdin.read()
@@ -322,6 +384,9 @@ def main():
             shutil.copy2(LATEST_REPORT, REPORTS_DIR / f"{run_id}.md")
     except Exception as e:
         print(f"[on_stop] WARNING: report archive失敗: {e}", file=sys.stderr)
+
+    # Discord 通知（notifications.json が設定されている場合のみ）
+    send_discord_notification(record)
 
     label = next_task["task_id"] if next_task else "all-done"
     print(f"[on_stop] {run_id} / report={report_source} / changed={len(changed_files)} / next={label}", file=sys.stderr)
