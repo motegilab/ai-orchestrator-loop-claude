@@ -1,6 +1,9 @@
 # ランタイム生成物はgit管理外
 runtime/**
 
+# Legacyは公開リポジトリに含めない
+legacy/
+
 # OS
 .DS_Store
 Thumbs.db
