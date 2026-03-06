@@ -11,18 +11,75 @@
           "id": "W1-1",
           "title": "環境セットアップ",
           "tasks": [
-            {"id": "T1", "title": "Claude Code CLI インストール", "status": "pending"},
-            {"id": "T2", "title": "make setup 実行", "status": "pending"},
-            {"id": "T3", "title": "GOチェックリスト §8 全項目クリア", "status": "pending"}
+            {
+              "id": "T1",
+              "title": "Claude Code CLI インストール",
+              "status": "done",
+              "evidence": "v2.1.69 確認済 (2026-03-06 run001 GOチェック)"
+            },
+            {
+              "id": "T2",
+              "title": "make setup 実行",
+              "status": "done",
+              "evidence": "setup.py が python/claude/hash を確認。SSOT hash 更新済"
+            },
+            {
+              "id": "T3",
+              "title": "GOチェックリスト §8 全項目クリア",
+              "status": "in_progress",
+              "evidence": "python3→python 修正後に再確認必要。Hook動作は run002 以降で確認済",
+              "remaining": ["T3-7: runtime/** がgit管理外か最終確認"]
+            }
           ]
         },
         {
           "id": "W1-2",
           "title": "Hookの動作確認",
           "tasks": [
-            {"id": "T4", "title": "SessionStart Hook動作確認", "status": "pending"},
-            {"id": "T5", "title": "Stop Hook動作確認", "status": "pending"},
-            {"id": "T6", "title": "SSOTゲート動作確認（SSOT.md書き込みブロック）", "status": "pending"}
+            {
+              "id": "T4",
+              "title": "SessionStart Hook動作確認",
+              "status": "done",
+              "evidence": "run002: additionalContext注入を確認。next_session.md読み込みも確認"
+            },
+            {
+              "id": "T5",
+              "title": "Stop Hook動作確認",
+              "status": "done",
+              "evidence": "run001-003: REPORT_LATEST.md / latest.json / next_session.md 生成確認。on_stop.py を planner統合型に改善"
+            },
+            {
+              "id": "T6",
+              "title": "SSOTゲート動作確認（SSOT.md書き込みブロック）",
+              "status": "pending",
+              "evidence": "ssot_gate.py は存在・hash確認済。実際のブロック動作は未テスト"
+            }
+          ]
+        },
+        {
+          "id": "W1-3",
+          "title": "Windows互換性修正",
+          "status": "done",
+          "note": "当初計画外だが実施済",
+          "tasks": [
+            {
+              "id": "T7",
+              "title": "Makefile Windows対応（bash→Python委譲）",
+              "status": "done",
+              "evidence": "loop_start.py / loop_status.py / setup.py に委譲。make loop-start 動作確認"
+            },
+            {
+              "id": "T8",
+              "title": "settings.json python3→python修正",
+              "status": "done",
+              "evidence": "run002 で Hook 5本すべての動作確認"
+            },
+            {
+              "id": "T9",
+              "title": "on_stop.py planner統合（next_session.mdに具体的タスク指示）",
+              "status": "done",
+              "evidence": "run003 の next_session.md で T1 への具体指示が生成されたことを確認"
+            }
           ]
         }
       ]
@@ -31,13 +88,40 @@
       "id": "M2",
       "title": "Phase 2: Skills & 品質ゲート",
       "status": "pending",
-      "waves": []
+      "waves": [
+        {
+          "id": "W2-1",
+          "title": "Skills 充実",
+          "tasks": [
+            {"id": "T10", "title": "observe/patch/verify/report SKILL.md を実行可能な品質に引き上げ", "status": "pending"},
+            {"id": "T11", "title": "release SKILL.md テスト実行", "status": "pending"}
+          ]
+        },
+        {
+          "id": "W2-2",
+          "title": "品質ゲート",
+          "tasks": [
+            {"id": "T12", "title": "post_tool_quality.py に実質チェックを追加", "status": "pending"},
+            {"id": "T13", "title": "T6: SSOTゲート実際のブロック動作テスト", "status": "pending"}
+          ]
+        }
+      ]
     },
     {
       "id": "M3",
       "title": "Phase 3: テンプレ化 & マルチPJ展開",
       "status": "pending",
-      "waves": []
+      "waves": [
+        {
+          "id": "W3-1",
+          "title": "テンプレ完成",
+          "tasks": [
+            {"id": "T14", "title": "新PJ用SSOT作成プロンプトを docs/ に作成", "status": "pending"},
+            {"id": "T15", "title": "GitHub Template リポジトリ設定", "status": "pending"},
+            {"id": "T16", "title": "Discord/Slack通知 (notifications.json + hook実装)", "status": "pending"}
+          ]
+        }
+      ]
     }
   ]
 }
