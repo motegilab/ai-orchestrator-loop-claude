@@ -56,7 +56,9 @@ def is_report_template(path):
 
 
 def read_audit_entries():
-    """audit_log.jsonl からエントリを読む"""
+    """audit_log.jsonl から現セッションのエントリのみを返す。
+    session_start マーカーを境界として、最後のマーカー以降のエントリのみ集計する。
+    """
     if not AUDIT_LOG.exists():
         return []
     entries = []
@@ -65,7 +67,11 @@ def read_audit_entries():
         if not line:
             continue
         try:
-            entries.append(json.loads(line))
+            entry = json.loads(line)
+            if entry.get("type") == "session_start":
+                entries = []  # セッション境界でリセット → 現セッション分のみ残る
+            else:
+                entries.append(entry)
         except json.JSONDecodeError:
             pass
     return entries
@@ -288,11 +294,13 @@ def send_discord_notification(record):
     next_task = record.get("next_task")
     next_label = next_task["task_id"] + " — " + next_task["task_title"] if next_task else "全タスク完了"
 
+    has_next = next_task is not None
     status_icon = "✅" if status == "success" else "⚠️"
+    loop_icon = "🔁 次ループへ" if has_next else "🎉 全タスク完了"
     mention = f"<@&{discord['mention_role_id']}> " if discord.get("mention_role_id") else ""
 
     payload = {
-        "content": f"{mention}{status_icon} **AI Orchestrator** — `{run_id}` 完了",
+        "content": f"{mention}{status_icon} **AI Orchestrator** — `{run_id}` 完了　{loop_icon}",
         "embeds": [{
             "color": 0x57F287 if status == "success" else 0xFEE75C,
             "fields": [
@@ -380,13 +388,15 @@ def main():
     except Exception as e:
         print(f"[on_stop] WARNING: run record書き込み失敗: {e}", file=sys.stderr)
 
-    # REPORT_LATEST.md をアーカイブ（per-run履歴として保存）
-    try:
-        if LATEST_REPORT.exists():
-            import shutil
-            shutil.copy2(LATEST_REPORT, REPORTS_DIR / f"{run_id}.md")
-    except Exception as e:
-        print(f"[on_stop] WARNING: report archive失敗: {e}", file=sys.stderr)
+    # REPORT_LATEST.md をアーカイブ（Claudeが書いた場合のみ保存）
+    # auto_generated や stale なレポートは archive しない
+    if report_source == "written_by_claude":
+        try:
+            if LATEST_REPORT.exists():
+                import shutil
+                shutil.copy2(LATEST_REPORT, REPORTS_DIR / f"{run_id}.md")
+        except Exception as e:
+            print(f"[on_stop] WARNING: report archive失敗: {e}", file=sys.stderr)
 
     # Discord 通知（notifications.json が設定されている場合のみ）
     send_discord_notification(record)
