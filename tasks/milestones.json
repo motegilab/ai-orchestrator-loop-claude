@@ -121,6 +121,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "M4",
+      "title": "Phase 4: 配布パッケージ & 自動ループテスト",
+      "status": "pending",
+      "waves": [
+        {
+          "id": "W4-1",
+          "title": "配布パッケージ作成",
+          "tasks": [
+            {
+              "id": "T17",
+              "title": "tools/scripts/auto_setup.py を作成（新規利用者向け対話的セットアップスクリプト）",
+              "status": "pending",
+              "description": "新規利用者が clone 直後に python tools/scripts/auto_setup.py を実行すると、(1)前提条件チェック(claude/python/make), (2)notifications.json を example からコピーしてWebhook URL入力を促す, (3)make setup 実行, (4)GOチェックリスト§8を自動確認して結果を stdout に出力する。エラーは明確なメッセージで案内。"
+            },
+            {
+              "id": "T18",
+              "title": "docs/INITIAL_SETUP_GUIDE.md を作成（テンプレートから新PJを立ち上げるまでの完全ガイド）",
+              "status": "pending",
+              "description": "GitHub Template から clone → auto_setup.py → SSOT/CLAUDE.md書き換え → make loop-start の全工程を図解なしのステップ形式で記述。想定読者: このテンプレートを初めて使う開発者。auto_setup.py の使い方、notifications.json の設定方法、最初のループで何が起きるかも含める。"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
