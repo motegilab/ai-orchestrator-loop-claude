@@ -4,7 +4,7 @@
 #
 # 入口: loop-start / loop-stop / loop-status / setup
 
-.PHONY: loop-start loop-start-detach loop-stop loop-status setup help
+.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup help
 
 ## ループ開始（同じウィンドウ — Hook の stdin/stdout が正しく動く）
 loop-start:
@@ -13,6 +13,10 @@ loop-start:
 ## ループ開始（別ウィンドウ — Windows Terminal or cmd.exe で新規起動）
 loop-start-detach:
 	python tools/scripts/loop_start.py --detach
+
+## 自動連続ループ（pending タスクがなくなるまで / N回指定可: make loop-run N=3）
+loop-run:
+	python tools/scripts/loop_run.py $(N)
 
 ## 前回ループの状態確認
 loop-status:
@@ -28,4 +32,4 @@ setup:
 
 ## ヘルプ
 help:
-	python -c "print('make loop-start         ループ開始 (同ウィンドウ)'); print('make loop-start-detach  ループ開始 (新規ウィンドウ, Windows)'); print('make loop-status        前回ループの状態を表示'); print('make loop-stop          停止案内を表示'); print('make setup              初回セットアップ')"
+	python -c "print('make loop-start         ループ開始 (同ウィンドウ)'); print('make loop-start-detach  ループ開始 (新規ウィンドウ, Windows)'); print('make loop-run           自動連続ループ (pending タスクがなくなるまで)'); print('make loop-run N=3       最大3ループ実行'); print('make loop-status        前回ループの状態を表示'); print('make loop-stop          停止案内を表示'); print('make setup              初回セットアップ')"
