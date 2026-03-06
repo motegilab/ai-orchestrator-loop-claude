@@ -170,13 +170,15 @@ def generate_next_session(run_id, ts, report_source, next_task, audit_entries):
 
     done_text += f"\n  report_source: {report_source}"
 
-    # report から decision を抽出
+    # report から decision を抽出（## decision の直後の非空行を取得）
     report_decision = "不明"
     if LATEST_REPORT.exists():
+        in_decision = False
         for line in LATEST_REPORT.read_text(encoding="utf-8").splitlines():
             if line.startswith("## decision"):
-                pass
-            elif report_decision == "不明" and line.strip() and "decision" in line.lower():
+                in_decision = True
+                continue
+            if in_decision and line.strip():
                 report_decision = line.strip()
                 break
 
@@ -312,6 +314,14 @@ def main():
         LATEST_RUN.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
     except Exception as e:
         print(f"[on_stop] WARNING: run record書き込み失敗: {e}", file=sys.stderr)
+
+    # REPORT_LATEST.md をアーカイブ（per-run履歴として保存）
+    try:
+        if LATEST_REPORT.exists():
+            import shutil
+            shutil.copy2(LATEST_REPORT, REPORTS_DIR / f"{run_id}.md")
+    except Exception as e:
+        print(f"[on_stop] WARNING: report archive失敗: {e}", file=sys.stderr)
 
     label = next_task["task_id"] if next_task else "all-done"
     print(f"[on_stop] {run_id} / report={report_source} / changed={len(changed_files)} / next={label}", file=sys.stderr)

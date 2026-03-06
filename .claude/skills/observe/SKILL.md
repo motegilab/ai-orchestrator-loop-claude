@@ -16,7 +16,7 @@ allowed-tools: Read, Bash, Glob, Grep
 1. `SSOT.md` — §0 設計原則、§1 絶対ルール
 2. `runtime/runs/latest.json` — 前回ループの結果
 3. `runtime/reports/REPORT_LATEST.md` — 前回の詳細レポート
-4. `tasks/milestones.json` — 現在のタスク状況
+4. `tasks/milestones.json` — 現在のタスク状況（次の pending タスクを確認）
 
 ## Inputs
 - 問題の概要（プロンプトから）
@@ -24,10 +24,11 @@ allowed-tools: Read, Bash, Glob, Grep
 - 対象ファイル・ディレクトリ（指定された場合）
 
 ## Steps
-1. 前回レポートを読む: `cat runtime/reports/REPORT_LATEST.md`
-2. エラーの証拠を収集する（ファイルパスと行番号を特定）
-3. 仮説を1つ立てる（1原因1修正の原則）
-4. 証拠パスをリストアップする
+1. Read ツールで `runtime/reports/REPORT_LATEST.md` を読む（cat は使わない）
+2. Read ツールで `tasks/milestones.json` を読み、次の pending タスクを特定する
+3. エラー・問題の証拠を収集する（ファイルパスと行番号を特定）
+4. 仮説を1つ立てる（1原因1修正の原則）
+5. 証拠パスをリストアップする
 
 ## Outputs
 - `issue_candidates`: 発見した問題のリスト（最大3件）
@@ -37,5 +38,6 @@ allowed-tools: Read, Bash, Glob, Grep
 ## Failure Modes
 | 症状 | 対処 |
 |------|------|
-| runtime/が存在しない | 初回起動。milestones.jsonのT1.1.xを確認する |
-| latest.jsonが壊れている | runtime/runs/内の最新ファイルを直接読む |
+| runtime/ が存在しない | 初回起動。`make setup` を実行して環境を初期化する |
+| latest.json が壊れている | `runtime/runs/` 内の最新ファイルを Read ツールで直接読む |
+| milestones.json が見つからない | `tasks/milestones.json` を Glob で検索する |

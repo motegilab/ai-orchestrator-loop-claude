@@ -5,7 +5,7 @@
     {
       "id": "M1",
       "title": "Phase 1: Hook基盤構築",
-      "status": "in_progress",
+      "status": "done",
       "waves": [
         {
           "id": "W1-1",
@@ -26,9 +26,8 @@
             {
               "id": "T3",
               "title": "GOチェックリスト §8 全項目クリア",
-              "status": "in_progress",
-              "evidence": "python3→python 修正後に再確認必要。Hook動作は run002 以降で確認済",
-              "remaining": ["T3-7: runtime/** がgit管理外か最終確認"]
+              "status": "done",
+              "evidence": "run005: docs/go-checklist.md で9/9全項目確認。T3-7(runtime/ gitignore)もgit check-ignore+git ls-filesで確認済"
             }
           ]
         },
@@ -51,8 +50,8 @@
             {
               "id": "T6",
               "title": "SSOTゲート動作確認（SSOT.md書き込みブロック）",
-              "status": "pending",
-              "evidence": "ssot_gate.py は存在・hash確認済。実際のブロック動作は未テスト"
+              "status": "done",
+              "evidence": "run005: 6ケースをpython -c で実行検証。Write/Edit to SSOT.md→exit=2 BLOCKED確認。hash改ざん検出→exit=2確認。runtime/への書き込み→exit=0 ALLOWED確認"
             }
           ]
         },
@@ -87,22 +86,22 @@
     {
       "id": "M2",
       "title": "Phase 2: Skills & 品質ゲート",
-      "status": "pending",
+      "status": "done",
       "waves": [
         {
           "id": "W2-1",
           "title": "Skills 充実",
           "tasks": [
-            {"id": "T10", "title": "observe/patch/verify/report SKILL.md を実行可能な品質に引き上げ", "status": "pending"},
-            {"id": "T11", "title": "release SKILL.md テスト実行", "status": "pending"}
+            {"id": "T10", "title": "observe/patch/verify/report SKILL.md を実行可能な品質に引き上げ", "status": "done", "evidence": "run006: 4ファイル全修正。allowed-tools追加、cat→Read修正、Windows非対応コマンド除去、report SkillのPLACEHOLDER_MARKERS説明・on_stop.py役割分担明確化"},
+            {"id": "T11", "title": "release SKILL.md テスト実行", "status": "done", "evidence": "run006: 5ステップ全実行。PASS: runtime/未追跡・required files・ssot_gate・hooks syntax。BLOCKER発見: legacy/が44ファイルgit追跡中→公開前要対処。on_stop.py per-run report archive機能追加"}
           ]
         },
         {
           "id": "W2-2",
           "title": "品質ゲート",
           "tasks": [
-            {"id": "T12", "title": "post_tool_quality.py に実質チェックを追加", "status": "pending"},
-            {"id": "T13", "title": "T6: SSOTゲート実際のブロック動作テスト", "status": "pending"}
+            {"id": "T12", "title": "post_tool_quality.py に実質チェックを追加", "status": "done", "evidence": "run007: REPORT_LATEST.md必須フィールドチェック+CLAUDE.md 200行チェックをpolicy.json参照で実装。4ケーステスト全PASS"},
+            {"id": "T13", "title": "T6: SSOTゲート実際のブロック動作テスト", "status": "done", "evidence": "run005にてT6と統合済み。6ケース全PASS確認"}
           ]
         }
       ]

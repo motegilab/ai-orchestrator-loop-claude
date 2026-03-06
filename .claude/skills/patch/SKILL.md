@@ -1,6 +1,7 @@
 ---
 name: patch
 description: 最小差分でファイルを修正するSkill。修正・実装依頼時、observe Skillの結果を受けて修正に入る時、「直して」「実装して」と言われた時に自動invokeする。
+allowed-tools: Read, Edit, Write, MultiEdit, Bash
 ---
 
 # Patch Skill
@@ -10,15 +11,16 @@ description: 最小差分でファイルを修正するSkill。修正・実装�
 2. observe Skillの出力（hypothesis_one_cause）
 
 ## 鉄則
-- 1修正 = 1原因 = 1ファイル（複数ファイルにまたがる場合は最小範囲に絞る）
-- SSOT.md / policy/ssot_integrity.json は絶対に触らない
+- 1修正 = 1原因 = 最小ファイル数（通常1〜2ファイル。それ以上はスコープオーバー）
+- SSOT.md / policy/ssot_integrity.json / .claude/hooks/ssot_gate.py は触らない
+- 編集前に必ず Read ツールでファイルを読む
 
 ## Steps
-1. hypothesis_one_causeを確認する
-2. 修正対象ファイルを特定する（1ファイル原則）
-3. 最小差分で修正する（EditまたはMultiEdit）
+1. hypothesis_one_cause を確認する
+2. 修正対象ファイルを特定する（Read で内容確認してから編集）
+3. 最小差分で修正する（Edit または MultiEdit、新規ファイルは Write）
 4. 変更内容を1行で記述する（one_fix）
-5. verify Skillに引き継ぐ
+5. verify Skill に引き継ぐ
 
 ## Outputs
 - one_fix: 修正内容の1行説明
@@ -27,4 +29,5 @@ description: 最小差分でファイルを修正するSkill。修正・実装�
 
 ## Failure modes
 - 修正が大規模になりそうな場合 → スコープを縮小して最小限の修正に留める
-- 依存ファイルが多い場合 → 最も根本のファイルのみ修正し、依存先はnext_sessionに書く
+- 依存ファイルが多い場合 → 最も根本のファイルのみ修正し、依存先は next_session に書く
+- SSOT gate にブロックされた場合 → 対象ファイルが protected 対象。別アプローチを取る
