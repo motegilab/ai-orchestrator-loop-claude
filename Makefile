@@ -4,12 +4,15 @@
 #
 # 入口: loop-start / loop-stop / loop-status / setup
 
-.PHONY: loop-start loop-stop loop-status setup help
+.PHONY: loop-start loop-start-detach loop-stop loop-status setup help
 
-## ループ開始
-## runtime/logs/next_session.md があれば前回の続き、なければ FIRST_PROMPT.md を使う
+## ループ開始（同じウィンドウ — Hook の stdin/stdout が正しく動く）
 loop-start:
 	python tools/scripts/loop_start.py
+
+## ループ開始（別ウィンドウ — Windows Terminal or cmd.exe で新規起動）
+loop-start-detach:
+	python tools/scripts/loop_start.py --detach
 
 ## 前回ループの状態確認
 loop-status:
@@ -25,4 +28,4 @@ setup:
 
 ## ヘルプ
 help:
-	python -c "print('make loop-start   ループ開始 (前回の続き or 初回)'); print('make loop-status  前回ループの状態を表示'); print('make loop-stop    停止案内を表示'); print('make setup        初回セットアップ (runtime/ 作成 + hash 更新)')"
+	python -c "print('make loop-start         ループ開始 (同ウィンドウ)'); print('make loop-start-detach  ループ開始 (新規ウィンドウ, Windows)'); print('make loop-status        前回ループの状態を表示'); print('make loop-stop          停止案内を表示'); print('make setup              初回セットアップ')"

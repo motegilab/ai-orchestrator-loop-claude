@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/on_session_start.py"
+            "command": "python .claude/hooks/on_session_start.py"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/ssot_gate.py --mode=prompt"
+            "command": "python .claude/hooks/ssot_gate.py --mode=prompt"
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/ssot_gate.py"
+            "command": "python .claude/hooks/ssot_gate.py"
           }
         ]
       }
@@ -37,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/post_tool_quality.py"
+            "command": "python .claude/hooks/post_tool_quality.py"
           }
         ]
       }
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/on_stop.py",
+            "command": "python .claude/hooks/on_stop.py",
             "timeout": 60
           }
         ]
