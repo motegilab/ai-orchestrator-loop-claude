@@ -146,6 +146,114 @@
           ]
         }
       ]
+    },
+    {
+      "id": "M5",
+      "title": "Phase 5: Othello 自律実装（コンポーネント設計テスト）",
+      "status": "pending",
+      "note": "設計仕様: docs/othello-architecture.md を必ず最初に読むこと",
+      "waves": [
+        {
+          "id": "W5-1",
+          "title": "Component 1: Board（依存なし）",
+          "tasks": [
+            {
+              "id": "T19",
+              "title": "docs/othello-architecture.md を読み、Board インターフェース契約に従って src/othello/__init__.py と src/othello/board.py を実装する。EMPTY=0/BLACK=1/WHITE=2 定数、Board クラス（get/set/copy/count）、8x8 初期配置（中央4マス）を含める",
+              "status": "pending"
+            },
+            {
+              "id": "T20",
+              "title": "tests/othello/__init__.py と tests/othello/test_board.py を作成し、python -m pytest tests/othello/test_board.py -v で全テスト PASS を確認する。初期配置確認・get/set・copy が独立したコピーか・count を検証する",
+              "status": "pending"
+            }
+          ]
+        },
+        {
+          "id": "W5-2",
+          "title": "Component 2: Rules（依存: board のみ）",
+          "tasks": [
+            {
+              "id": "T21",
+              "title": "docs/othello-architecture.md の Rules インターフェース契約に従って src/othello/rules.py を実装する。board のみ import する。get_valid_moves / apply_move（新Board返す）/ is_game_over / get_winner を実装する",
+              "status": "pending"
+            },
+            {
+              "id": "T22",
+              "title": "tests/othello/test_rules.py を作成し、python -m pytest tests/othello/test_rules.py -v で全テスト PASS を確認する。初期有効手4マス・apply_move で石が反転する・is_game_over・get_winner を検証する",
+              "status": "pending"
+            },
+            {
+              "id": "T23",
+              "title": "統合確認: python -m pytest tests/othello/test_board.py tests/othello/test_rules.py -v を実行して全 PASS を確認する。失敗があれば Board/Rules を修正してから done にする",
+              "status": "pending"
+            }
+          ]
+        },
+        {
+          "id": "W5-3",
+          "title": "Component 3: GameState（依存: board, rules のみ）",
+          "tasks": [
+            {
+              "id": "T24",
+              "title": "docs/othello-architecture.md の GameState インターフェース契約に従って src/othello/game_state.py を実装する。board と rules のみ import する。make_move / pass_turn / is_over / winner / score を実装する",
+              "status": "pending"
+            },
+            {
+              "id": "T25",
+              "title": "tests/othello/test_game_state.py を作成し、python -m pytest tests/othello/test_game_state.py -v で全テスト PASS を確認する。make_move 成功/失敗・pass_turn・is_over・score を検証する",
+              "status": "pending"
+            },
+            {
+              "id": "T26",
+              "title": "統合確認: python -m pytest tests/othello/ -v を実行して全 PASS を確認する（Board + Rules + GameState の3層統合）。失敗があれば修正してから done にする",
+              "status": "pending"
+            }
+          ]
+        },
+        {
+          "id": "W5-4",
+          "title": "Component 4: AIPlayer（依存: board, rules のみ）",
+          "tasks": [
+            {
+              "id": "T27",
+              "title": "docs/othello-architecture.md の AIPlayer 契約に従って src/othello/ai.py に RandomAI を実装する。board と rules のみ import する（game_state は import 禁止）。choose_move(board) → tuple | None を実装する",
+              "status": "pending"
+            },
+            {
+              "id": "T28",
+              "title": "src/othello/ai.py に MinimaxAI を追記する（depth=4）。評価関数はコーナー(+100)/辺(+10)/通常(+1) の重み付きスコア差。alpha-beta pruning 推奨",
+              "status": "pending"
+            },
+            {
+              "id": "T29",
+              "title": "tests/othello/test_ai.py を作成し、python -m pytest tests/othello/test_ai.py -v で全テスト PASS を確認する。RandomAI が有効手を返す・MinimaxAI がコーナーを優先する を検証する",
+              "status": "pending"
+            }
+          ]
+        },
+        {
+          "id": "W5-5",
+          "title": "Component 5: CLI + 全統合",
+          "tasks": [
+            {
+              "id": "T30",
+              "title": "docs/othello-architecture.md の CLI 契約に従って src/othello/cli.py を実装する。game_state と ai のみ import する。CLI(game_state, black_player, white_player) / run() / display_board() を実装する",
+              "status": "pending"
+            },
+            {
+              "id": "T31",
+              "title": "src/othello/main.py を実装する。引数なし=Human vs RandomAI / --minimax=Human vs MinimaxAI / --ai-vs-ai=RandomAI vs MinimaxAI として起動できるようにする",
+              "status": "pending"
+            },
+            {
+              "id": "T32",
+              "title": "全統合確認: python -m pytest tests/othello/ -v が全 PASS かつ python src/othello/main.py --ai-vs-ai でゲームが最後まで自動完走することを確認する。失敗があれば修正してから done にする",
+              "status": "pending"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
