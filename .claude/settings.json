@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(python tools/scripts/ssot_check.py)",
+      "Bash(printf \"n\\\\n3\\\\n\")",
+      "Bash(python tools/scripts/loop_run.py)",
+      "Bash(python -m pytest tests/infra/ -v)",
+      "Bash(python -c \":*)",
+      "Bash(python -m pytest tests/infra/ -q)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {
