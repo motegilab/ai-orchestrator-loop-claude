@@ -103,6 +103,7 @@ def get_next_task():
                             "wave_title": wave["title"],
                             "task_id": task["id"],
                             "task_title": task["title"],
+                            "checkpoint": task.get("checkpoint", False),
                         }
     return None
 
