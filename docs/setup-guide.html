@@ -275,6 +275,66 @@
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
+    /* ── URL 入力フォーム ── */
+    .url-form {
+      background: var(--surface2);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .url-form label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .url-form input[type="text"] {
+      width: 100%;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #fff;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .url-form input[type="text"]:focus { border-color: var(--accent); }
+    .url-form input[type="text"]::placeholder { color: var(--text-muted); }
+    .url-form .hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── コピーボタン付きコードブロック ── */
+    .code-wrap {
+      position: relative;
+      margin: 12px 0;
+    }
+    .code-wrap pre {
+      margin: 0;
+      padding-right: 80px;
+    }
+    .copy-code-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .copy-code-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .copy-code-btn.copied { background: var(--accent2); color: #000; border-color: var(--accent2); }
+
     /* ── コピペブロック ── */
     .copybox {
       background: var(--code-bg);
@@ -442,25 +502,100 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
 
     <!-- Step 1 -->
     <section id="step1">
-      <h2><span class="step-badge">1</span>リポジトリを作成する</h2>
-      <h3>GitHub UI から使う場合</h3>
+      <h2><span class="step-badge">1</span>リポジトリを作成してローカルに持ってくる</h2>
+
+      <!-- GitHub とローカルの関係図 -->
+      <h3>まず知っておくこと — GitHub とローカルフォルダの関係</h3>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:20px 24px; margin:12px 0;">
+        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; text-align:center;">
+          <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
+            <div style="font-size:28px; margin-bottom:8px;">☁️</div>
+            <div style="font-weight:700; color:#fff; margin-bottom:4px;">GitHub（クラウド）</div>
+            <div style="font-size:12px; color:var(--text-muted);">ファイルがインターネット上に保存されている場所。ブラウザで見れる。</div>
+          </div>
+          <div style="font-size:24px; color:var(--accent);">⇄</div>
+          <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
+            <div style="font-size:28px; margin-bottom:8px;">💻</div>
+            <div style="font-weight:700; color:#fff; margin-bottom:4px;">ローカル（自分のPC）</div>
+            <div style="font-size:12px; color:var(--text-muted);">あなたのパソコン上のフォルダ。実際にコマンドを動かす場所。</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:13px; color:var(--text-muted); text-align:center;">
+          <code>git clone</code> = GitHub からローカルにコピーする ／
+          <code>git push</code> = ローカルから GitHub にアップする
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="alert-icon">💡</div>
+        <div><strong>ローカルフォルダは自分で作らなくてOKです。</strong>
+        <code>git clone</code> を実行すると、自動でフォルダが作られてファイルがそこにコピーされます。</div>
+      </div>
+
+      <!-- ① GitHub でリポジトリを作る -->
+      <div style="background:linear-gradient(135deg,#1e2a4a,#1a1d27); border:2px solid var(--accent); border-radius:12px; padding:24px 28px; margin:20px 0; text-align:center;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:1.5px; color:var(--accent); text-transform:uppercase; margin-bottom:10px;">START HERE — まずここから</div>
+        <div style="font-size:15px; color:var(--text); margin-bottom:16px;">下のテンプレートリポジトリを開いて <strong style="color:#fff;">Use this template</strong> ボタンを押してください。</div>
+        <a href="https://github.com/motegilab/ai-orchestrator-loop-claude"
+           target="_blank"
+           style="display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff; font-weight:700; font-size:15px; padding:12px 28px; border-radius:8px; text-decoration:none; transition:opacity 0.2s;"
+           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          テンプレートを開く — github.com/motegilab/ai-orchestrator-loop-claude
+        </a>
+        <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">ページを開いたら緑の <strong>Use this template</strong> → <strong>Create a new repository</strong> を選択してください。</div>
+      </div>
+
+      <h3 style="margin-top:24px;">① GitHub でリポジトリを作る</h3>
       <ol>
-        <li>テンプレートリポジトリを GitHub で開く</li>
-        <li><strong>Use this template</strong> ボタンをクリック</li>
-        <li>新しいリポジトリ名を入力して作成</li>
-        <li>クローンする</li>
+        <li>上のボタンでテンプレートリポジトリを開く</li>
+        <li>緑色の <strong>Use this template</strong> ボタンをクリック</li>
+        <li><strong>Create a new repository</strong> を選択</li>
+        <li>Repository name に新しいプロジェクト名を入力（例: <code>my-ai-project</code>）</li>
+        <li>Public / Private を選んで <strong>Create repository</strong> をクリック</li>
+        <li>作成されたページで <strong>Code ▼</strong> ボタン → URL をコピー（<code>.git</code> で終わる URL）</li>
       </ol>
-      <pre><code><span class="comment"># 作成されたリポジトリをクローン</span>
-<span class="cmd">git clone</span> https://github.com/YOUR_ORG/YOUR_REPO.git
-<span class="cmd">cd</span> YOUR_REPO</code></pre>
 
-      <h3>gh CLI から使う場合</h3>
-      <pre><code><span class="cmd">gh repo create</span> my-new-project \
-  --template motegilab/ai-orchestrator-loop-claude \
-  --private \
-  --clone
+      <!-- ② URL を入力 → コマンド自動生成 -->
+      <h3 style="margin-top:24px;">② あなたのリポジトリ URL を入力する</h3>
+      <p>コピーした URL をここに貼ると、下のコマンドが自動で書き換わります。</p>
 
-<span class="cmd">cd</span> my-new-project</code></pre>
+      <div class="url-form">
+        <label>① あなたの GitHub リポジトリ URL</label>
+        <input type="text" id="repo-url-input"
+          placeholder="https://github.com/あなたのID/my-ai-project.git"
+          value="">
+        <div class="hint">GitHub の Code ▼ ボタンからコピーした URL を貼る</div>
+
+        <label style="margin-top:18px;">② プロジェクトを作りたいフォルダのパス</label>
+        <input type="text" id="local-path-input"
+          placeholder="C:\Users\あなたの名前\projects"
+          value="">
+        <div class="hint">エクスプローラーのアドレスバーからコピーできます。ここの直下にフォルダが作られます。</div>
+      </div>
+
+      <!-- ③ 自動生成されるコマンド -->
+      <h3 style="margin-top:24px;">③ 生成されたコマンドをそのまま実行する</h3>
+      <p>ターミナル（PowerShell / Git Bash）を開いて、下のコマンドをまるごとコピーして貼り付けてください。</p>
+
+      <div class="code-wrap">
+        <pre><code id="clone-cmd"># ① 上の2つの欄を埋めると、ここが自動で書き換わります</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('clone-cmd', this)">コピー</button>
+      </div>
+
+      <div class="alert alert-ok" style="margin-top:12px;">
+        <div class="alert-icon">✅</div>
+        <div id="clone-result-msg">URL とローカルパスを入力すると、実行すべきコマンドが生成されます。</div>
+      </div>
+
+      <h3 style="margin-top:24px;">ターミナルはどこで開く？（Windows の場合）</h3>
+      <table>
+        <tr><th>方法</th><th>操作</th></tr>
+        <tr><td>エクスプローラーから</td><td>プロジェクトを置きたいフォルダを開いて、アドレスバーに <code>cmd</code> と入力して Enter</td></tr>
+        <tr><td>スタートメニューから</td><td>「Git Bash」または「PowerShell」を検索して起動、その後 <code>cd</code> で移動</td></tr>
+        <tr><td>VSCode から</td><td>VSCode を開いて Ctrl+` でターミナルを開く</td></tr>
+      </table>
+
     </section>
 
     <!-- Step 2 -->
@@ -489,10 +624,28 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
     <!-- Step 3 -->
     <section id="step3">
       <h2><span class="step-badge">3</span>Discord 通知を設定する（任意）</h2>
-      <p>ループの開始・完了を Discord に通知したい場合は <code>notifications.json</code> を設定します。</p>
-      <pre><code><span class="comment"># テンプレートをコピー</span>
-<span class="cmd">cp</span> notifications.json.example notifications.json</code></pre>
-      <pre><code><span class="comment">// notifications.json の内容</span>
+      <p>ループの開始・完了を Discord に通知できます。通知不要なら Enter でスキップしてかまいません。設定したい場合は下の手順で Webhook URL を取得してください。</p>
+
+      <!-- Webhook URL の取り方 -->
+      <h3 style="margin-top:24px;">① Discord で Webhook URL を取得する</h3>
+      <ol>
+        <li>Discord を開き、通知を受け取りたい <strong>サーバー</strong> を選ぶ（なければ新規作成）</li>
+        <li>通知を送りたい <strong>テキストチャンネル</strong> を右クリック → <strong>チャンネルの編集</strong></li>
+        <li>左メニューの <strong>連携サービス</strong>（Integrations）を開く</li>
+        <li><strong>ウェブフック</strong>（Webhooks）→ <strong>新しいウェブフック</strong> をクリック</li>
+        <li>名前を好きに変えて（例: <code>AI Loop</code>）、<strong>ウェブフック URL をコピー</strong> を押す</li>
+        <li>コピーした URL は <code>https://discord.com/api/webhooks/1234.../xxxx...</code> という形式</li>
+      </ol>
+
+      <div class="alert alert-info" style="margin-top:12px;">
+        <div class="alert-icon">💡</div>
+        <div>チャンネルが見つからない場合：サーバー設定 → 連携サービス → ウェブフック からも作成できます。</div>
+      </div>
+
+      <!-- notifications.json の設定 -->
+      <h3 style="margin-top:24px;">② notifications.json に貼り付ける</h3>
+      <p><code>auto_setup.py</code> で聞かれた URL 入力欄に貼り付けるか、以下のように直接ファイルを編集します。</p>
+      <pre><code><span class="comment">// notifications.json（プロジェクトルートにあります）</span>
 {
   "discord": {
     <span class="hlkey">"enabled"</span>: true,
@@ -501,9 +654,20 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
     <span class="hlkey">"mention_role_id"</span>: ""
   }
 }</code></pre>
-      <div class="alert alert-ok">
+      <p style="margin-top:8px; font-size:13px; color:var(--text-muted);"><code>YOUR_ID/YOUR_TOKEN</code> の部分をコピーした URL 全体で丸ごと置き換えてください。</p>
+
+      <!-- 後から設定する場合 -->
+      <h3 style="margin-top:24px;">③ セットアップ後に設定し直す場合</h3>
+      <p><code>auto_setup.py</code> をスキップした後でも、<code>notifications.json</code> をテキストエディタで直接開いて URL を書き換えれば有効になります。</p>
+      <div class="cmd-block">
+        <span class="prompt">$</span>
+        <code>python tools/scripts/auto_setup.py</code>
+        <span class="cmd-desc">もう一度実行すると再設定できます</span>
+      </div>
+
+      <div class="alert alert-ok" style="margin-top:16px;">
         <div class="alert-icon">✅</div>
-        <div><code>notifications.json</code> は <code>.gitignore</code> で除外済みです。Webhook URL がリポジトリに含まれる心配はありません。</div>
+        <div><code>notifications.json</code> は <code>.gitignore</code> で除外済みです。Webhook URL がリポジトリに公開される心配はありません。</div>
       </div>
     </section>
 
@@ -761,5 +925,123 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
   </p>
 </footer>
 
+<script>
+// ── URL + ローカルパス → コマンド自動生成 ────────────────────
+const urlInput   = document.getElementById('repo-url-input');
+const pathInput  = document.getElementById('local-path-input');
+const cloneCmd   = document.getElementById('clone-cmd');
+const resultMsg  = document.getElementById('clone-result-msg');
+
+function getRepoName(url) {
+  const m = url.trim().match(/\/([^\/]+?)(\.git)?$/);
+  return m ? m[1] : 'my-project';
+}
+
+// パス区切り文字を正規化（Windows バックスラッシュ対応）
+function normPath(p) { return p.replace(/\\/g, '\\'); }
+
+function updateCommands() {
+  const url      = urlInput  ? urlInput.value.trim()  : '';
+  const localRaw = pathInput ? pathInput.value.trim() : '';
+
+  // フォルダ名は URL から取得。ローカルパス末尾がリポジトリ名なら分離
+  let parentPath = localRaw;
+  let repoName   = url ? getRepoName(url) : 'my-project';
+
+  // ローカルパスの末尾がリポジトリ名と一致する場合は親だけ使う
+  // 例: G:\projects\open-claw → G:\projects (repoName は URL から取得)
+  const sep = localRaw.includes('/') ? '/' : '\\';
+  const parts = localRaw.split(/[/\\]/);
+  const last = parts[parts.length - 1];
+  if (url && last === repoName) {
+    parentPath = parts.slice(0, -1).join(sep);
+  }
+
+  const displayUrl = url || 'https://github.com/あなたのID/my-ai-project.git';
+  const lines = [];
+
+  if (parentPath) {
+    lines.push(`# ① プロジェクトを置きたいフォルダに移動`);
+    lines.push(`cd "${parentPath}"`);
+    lines.push(``);
+  }
+  lines.push(`# ${parentPath ? '②' : '①'} GitHub からローカルにコピー（フォルダが自動で作られる）`);
+  lines.push(`git clone ${displayUrl}`);
+  lines.push(``);
+  lines.push(`# ${parentPath ? '③' : '②'} 作られたフォルダに入る`);
+  lines.push(`cd ${repoName}`);
+
+  cloneCmd.textContent = lines.join('\n');
+
+  if (url && parentPath) {
+    const fullPath = parentPath.replace(/[/\\]$/, '') + sep + repoName;
+    resultMsg.textContent =
+      `コマンド実行後、「${fullPath}」フォルダが作られてファイルが全部入ります。このフォルダ内で作業してください。`;
+  } else if (url) {
+    resultMsg.textContent =
+      `「${repoName}」フォルダが現在地に作られます。ローカルパスも入力するとより具体的なコマンドが生成されます。`;
+  } else {
+    resultMsg.textContent = 'URL とローカルパスを入力すると、実行すべきコマンドが生成されます。';
+  }
+}
+
+if (urlInput)  { urlInput.addEventListener('input', updateCommands); }
+if (pathInput) { pathInput.addEventListener('input', updateCommands); }
+updateCommands();
+
+
+// ── コピーボタン ──────────────────────────────────────────────
+function copyCode(elemId, btn) {
+  const el = document.getElementById(elemId);
+  const text = el ? el.textContent : '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'コピー済み ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // フォールバック
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'コピー済み ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── ページ内の全 pre にコピーボタンを自動付与 ────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('pre').forEach((pre) => {
+    // すでに .code-wrap に入っているものはスキップ
+    if (pre.closest('.code-wrap')) return;
+    // id がある code 要素を持つものはスキップ（手動管理）
+    if (pre.querySelector('code[id]')) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-code-btn';
+    btn.textContent = 'コピー';
+    btn.onclick = () => {
+      const text = pre.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'コピー済み ✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+      });
+    };
+    wrap.appendChild(btn);
+  });
+});
+</script>
 </body>
 </html>

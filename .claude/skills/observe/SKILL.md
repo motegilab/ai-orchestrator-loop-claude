@@ -7,7 +7,9 @@ description: >
   - runtime/reports/REPORT_LATEST.md にエラー・失敗が記録されている時
   - "調べて" "確認して" "何が起きてる" などの調査依頼時
   - セッション開始直後にstatus=failedが検出された時
-allowed-tools: Read, Bash, Glob, Grep
+allowed-tools: "Read, Bash, Glob, Grep"
+metadata:
+  version: 1.1.0
 ---
 
 # Observe Skill
@@ -35,7 +37,7 @@ allowed-tools: Read, Bash, Glob, Grep
 - `hypothesis_one_cause`: 最優先の仮説（1文）
 - `evidence_paths`: 根拠ファイルのパスリスト
 
-## Failure Modes
+## Troubleshooting
 | 症状 | 対処 |
 |------|------|
 | runtime/ が存在しない | 初回起動。`make setup` を実行して環境を初期化する |

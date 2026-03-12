@@ -6,7 +6,12 @@
       "Bash(python tools/scripts/loop_run.py)",
       "Bash(python -m pytest tests/infra/ -v)",
       "Bash(python -c \":*)",
-      "Bash(python -m pytest tests/infra/ -q)"
+      "Bash(python -m pytest tests/infra/ -q)",
+      "WebFetch(domain:resources.anthropic.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebSearch",
+      "WebFetch(domain:claude.com)",
+      "WebFetch(domain:gist.github.com)"
     ]
   },
   "hooks": {

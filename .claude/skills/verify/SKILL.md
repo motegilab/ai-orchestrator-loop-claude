@@ -1,7 +1,9 @@
 ---
 name: verify
 description: 変更後の検証を行うSkill。patch Skillの後、「確認して」「テストして」「動くか確認」と言われた時に自動invokeする。
-allowed-tools: Bash, Read
+allowed-tools: "Bash, Read"
+metadata:
+  version: 1.1.0
 ---
 
 # Verify Skill
@@ -28,7 +30,10 @@ python .claude/hooks/ssot_gate.py --update-hash
 - stdout_tail: 標準出力（Bash ツール出力から引用）
 - evidence_paths: ログファイルのパス
 
-## Failure modes
-- コマンドが存在しない場合 → `python tools/scripts/loop_status.py` を代替として使う
-- タイムアウトの場合 → failed として記録。成功扱いにしない（§1絶対ルール）
-- Windows で `tail` / `head` が使えない → Bash ツールの出力をそのまま記録する
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| コマンドが存在しない | 環境差異 | `python tools/scripts/loop_status.py` を代替として使う |
+| タイムアウト | 処理が長い | failed として記録。成功扱いにしない（§1絶対ルール） |
+| `tail`/`head` が使えない（Windows） | コマンド未対応 | Bash ツールの出力をそのまま記録する |

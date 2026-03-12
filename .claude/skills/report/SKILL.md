@@ -1,16 +1,19 @@
 ---
 name: report
 description: セッション結果をレポートするSkill。作業終了時、Stopの直前、「レポートして」「まとめて」と言われた時に自動invokeする。
-allowed-tools: Write, Read
+allowed-tools: "Write, Read"
+metadata:
+  version: 1.1.0
 ---
 
 # Report Skill
 
-## MUST READ FIRST
-1. verify Skillの出力（exit_codes, stdout_tail）
+## Must Read First
+
+1. verify Skill の出力（exit_codes, stdout_tail）
 2. 今回セッションで変更したファイル一覧
 
-## ⚠️ 重要: on_stop.py との役割分担
+## ⚠️ on_stop.py との役割分担
 
 | 担当 | 処理 |
 |------|------|
@@ -18,66 +21,24 @@ allowed-tools: Write, Read
 | **on_stop.py（自動）** | `runtime/runs/latest.json` を生成する |
 | **on_stop.py（自動）** | `runtime/logs/next_session.md` を生成する |
 
-→ latest.json と next_session.md はClaudeが書かなくてよい。on_stop.pyが自動生成する。
+→ `latest.json` と `next_session.md` は Claude が書かなくてよい。
 
 ## Steps
+
 1. 今回セッションの作業結果をまとめる
-2. 下記テンプレートで `runtime/reports/REPORT_LATEST.md` を Write ツールで上書きする
-3. PLACEHOLDER_MARKERS（後述）を含まないことを確認する
-
-## REPORT_LATEST.md テンプレート
-
-```
-# REPORT_LATEST.md
-run_id: （on_stop.pyが付与するため "current_session" と書く）
-generated_at: （今日の日付 YYYY-MM-DD）
-status: written_by_claude
-generated_by: report Skill
-
-## hypothesis_one_cause
-（今回対処した問題の根本原因を1文で）
-
-## one_fix
-（適用した修正を1行で）
-
-## files_changed
-- （変更したファイルのパス）
-
-## verify_commands
-\`\`\`
-（検証に使ったコマンド）
-\`\`\`
-
-## exit_codes
-- （コマンド名: exit=0/1/2）
-
-## evidence_paths
-- runtime/artifacts/audit_log.jsonl
-- docs/go-checklist.md（該当する場合）
-
-## decision
-written_by_claude
-
-## DONE
-（完了したこと箇条書き）
-
-## NEXT
-（次タスクのID と タイトル）
-
-## FAIL
-（失敗したことがあれば。なければ「なし」）
-```
-
-## ⚠️ PLACEHOLDER_MARKERS（これらの文字列を含むと on_stop.py が上書きする）
-- `Claudeが作業中に更新する`
-- `実施した修正`
-- `変更ファイル`
-
-→ テンプレートの () 内を必ず実際の内容で埋めること。
+2. [レポートテンプレート](references/report-template.md) を Read で確認する
+3. テンプレートの `()` を実際の内容で埋めて `runtime/reports/REPORT_LATEST.md` を Write で上書きする
+4. PLACEHOLDER_MARKERS が含まれていないことを確認する（含まれると on_stop.py が上書きする）
 
 ## Outputs
-- `runtime/reports/REPORT_LATEST.md`（Write ツールで書き込み済み）
 
-## 完了確認
+- `runtime/reports/REPORT_LATEST.md`（Write ツールで書き込み済み）
 - `## decision` が `written_by_claude` になっていること
-- ファイルにPLACEHOLDER_MARKERSが含まれていないこと
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| on_stop.py がレポートを上書きした | PLACEHOLDER_MARKERS が残っていた | `()` 内を実際の内容で埋め直す |
+| Write ツールが拒否された | runtime/ 外のパスを指定した | パスを `runtime/reports/REPORT_LATEST.md` に修正する |
+| `decision` が `auto_generated` になった | report Skill を実行しなかった | 次ループ開始前に必ず report Skill を実行する |
