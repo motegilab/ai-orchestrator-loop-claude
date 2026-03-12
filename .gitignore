@@ -19,3 +19,12 @@ __pycache__/
 *.secret
 *.key
 notifications.json
+
+# IDE / エディタ
+*.code-workspace
+.vscode/settings.json
+.idea/
+
+# バックアップファイル
+*.bak
+*.orig
