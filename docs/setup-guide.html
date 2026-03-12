@@ -409,7 +409,8 @@
       <li><a href="#step1">Step 1: リポジトリ作成</a></li>
       <li><a href="#step2">Step 2: 自動セットアップ</a></li>
       <li><a href="#step3">Step 3: Discord 通知（任意）</a></li>
-      <li><a href="#step4">Step 4: SSOT 書き換え</a></li>
+      <li><a href="#claude-setup" style="color:var(--accent2); font-weight:700;">✨ Claude に任せる</a></li>
+      <li><a href="#step4">Step 4: SSOT 書き換え（手動）</a></li>
       <li><a href="#step5">Step 5: タスク定義</a></li>
       <li><a href="#step6">Step 6: ループ起動</a></li>
     </ul>
@@ -674,6 +675,50 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
         <div class="alert-icon">✅</div>
         <div><code>notifications.json</code> は <code>.gitignore</code> で除外済みです。Webhook URL がリポジトリに公開される心配はありません。</div>
       </div>
+    </section>
+
+    <!-- Claude に任せる（Step 3→4 の間） -->
+    <section id="claude-setup" style="border-color: var(--accent2); background: linear-gradient(135deg, #1a2a1a 0%, #1a1d27 100%);">
+      <h2><span class="step-badge" style="background:var(--accent2); color:#000;">✨</span>ここから先は Claude に任せる（おすすめ）</h2>
+      <p>Step 3 まで完了したら、残りの <strong>SSOT.md 書き換え・タスク定義・ループ起動</strong> はプロンプトを貼るだけで Claude が全部やってくれます。</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0;">
+        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:16px;">
+          <div style="font-weight:700; color:var(--text); margin-bottom:6px;">手動でやる場合</div>
+          <ul style="font-size:13px; color:var(--text-muted); padding-left:18px; line-height:2;">
+            <li>Step 4: SSOT.md を自分で書く</li>
+            <li>Step 5: milestones.json を自分で書く</li>
+            <li>Step 6: make loop-run を実行</li>
+          </ul>
+          <div style="font-size:12px; color:var(--warn); margin-top:8px;">★ 書き方のルールが多く、初心者は詰まりやすい</div>
+        </div>
+        <div style="background:var(--surface2); border:2px solid var(--accent2); border-radius:8px; padding:16px;">
+          <div style="font-weight:700; color:var(--accent2); margin-bottom:6px;">Claude に任せる場合 ← おすすめ</div>
+          <ul style="font-size:13px; color:var(--text-muted); padding-left:18px; line-height:2;">
+            <li>下のプロンプトをコピー</li>
+            <li>Claude Code に貼り付ける</li>
+            <li>質問に答えるだけで完成</li>
+          </ul>
+          <div style="font-size:12px; color:var(--accent2); margin-top:8px;">★ SSOT.md・milestones.json を自動生成してくれる</div>
+        </div>
+      </div>
+
+      <div class="copybox">
+        <div class="copybox-label">Step 3 完了後プロンプト — Claude Code に貼り付けてください</div>
+        <pre><code>docs/ssot-setup-prompt.md をファイルとして開いて、
+「▼ここからコピー▼」〜「▲ここまでコピー▲」の間をすべてコピーし、
+Claude Code のチャット欄に貼り付けてください。</code></pre>
+        <a href="ssot-setup-prompt.md" target="_blank" style="display:inline-block; background:var(--accent2); color:#000; border-radius:6px; padding:8px 20px; font-size:13px; font-weight:700; margin-top:14px; text-decoration:none;">
+          プロンプトファイルを開く →
+        </a>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:16px;">
+        <div class="alert-icon">💡</div>
+        <div>Claude がヒアリング → SSOT.md 生成 → milestones.json 生成 → <code>make setup</code> → ループ起動まで全部案内してくれます。自分でファイルを書く必要はありません。</div>
+      </div>
+
+      <p style="margin-top:16px; font-size:13px; color:var(--text-muted);">手動で設定したい場合は、このまま下の Step 4 〜 6 を読み進めてください。</p>
     </section>
 
     <!-- Step 4 -->
