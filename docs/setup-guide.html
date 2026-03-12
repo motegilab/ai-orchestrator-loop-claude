@@ -1195,8 +1195,8 @@ git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git "${tmp}"
 # ② 必要なフォルダ・ファイルだけを既存PJへコピー（src/ tests/ README.md は除外）
 robocopy "${tmp}" "${dst}" /E /XD .git runtime __pycache__ legacy src tests /XF README.md
 
-# ③ 一時フォルダを削除
-rmdir /s /q "${tmp}"
+# ③ 一時フォルダを削除（PowerShell 構文）
+Remove-Item -Recurse -Force "${tmp}"
 
 # ④ 既存PJへ移動してセットアップ実行
 cd "${dst}"
