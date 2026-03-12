@@ -421,6 +421,11 @@
       <li><a href="#checkpoint">チェックポイント</a></li>
       <li><a href="#trouble">トラブル対処</a></li>
     </ul>
+    <div class="section-label">応用</div>
+    <ul>
+      <li><a href="#existing-project">既存PJへの導入</a></li>
+      <li><a href="#sync-upstream">テンプレート更新の反映</a></li>
+    </ul>
   </nav>
 
   <!-- ── メイン ── -->
@@ -912,6 +917,207 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
 <span class="cmd">make loop-run</span>      <span class="comment"># 再実行</span></code></pre>
     </section>
 
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 応用① 既存PJへの導入                           -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section id="existing-project">
+      <h2><span class="step-badge" style="background:var(--accent2); color:#000;">+</span>既存プロジェクトへの導入</h2>
+      <p>すでにコードが存在するプロジェクトに、このオーケストレーター層だけを後から乗せることができます。<br>
+      既存のコード・ファイルはそのまま残り、<strong>Claude の作業管理レイヤーだけが追加</strong>されます。</p>
+
+      <div class="alert alert-info" style="margin-top:16px;">
+        <div class="alert-icon">💡</div>
+        <div>イメージとしては「既存のプロジェクトフォルダに .claude/ と tools/ の引き出しを追加する」だけです。ソースコードには一切触れません。</div>
+      </div>
+
+      <!-- 全体像 -->
+      <h3 style="margin-top:28px;">① 何をコピーするのか</h3>
+      <p>テンプレートリポジトリから以下のファイル・フォルダを既存PJのルートにコピーします。</p>
+
+      <table>
+        <tr><th>コピーするもの</th><th>役割</th><th>既存ファイルと衝突する？</th></tr>
+        <tr><td><code>.claude/</code></td><td>Hook・Skills（Claude の自動動作を定義）</td><td>通常なし</td></tr>
+        <tr><td><code>tools/scripts/</code></td><td>ループ実行スクリプト群</td><td>通常なし</td></tr>
+        <tr><td><code>policy/</code></td><td>SSOT保護ポリシー</td><td>なし</td></tr>
+        <tr><td><code>tasks/milestones.json</code></td><td>タスク管理（中身は書き換える）</td><td>なし</td></tr>
+        <tr><td><code>SSOT.md</code></td><td>設計の正本（PJ固有に書き換える）</td><td>なし</td></tr>
+        <tr><td><code>CLAUDE.md</code></td><td>Claude への基本指示（PJ固有に書き換える）</td><td>既存の CLAUDE.md があれば内容をマージ</td></tr>
+        <tr><td><code>Makefile</code></td><td>ループ起動コマンド</td><td>既存 Makefile があれば末尾にマージ</td></tr>
+        <tr><td><code>.gitignore</code>（一部）</td><td><code>runtime/</code> などを除外</td><td>既存に追記するだけでOK</td></tr>
+      </table>
+
+      <!-- ステップ -->
+      <h3 style="margin-top:28px;">② 手順</h3>
+
+      <p><strong>Step 1 — テンプレートをローカルに clone する</strong></p>
+      <div class="code-wrap">
+        <pre><code id="existing-clone">git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git _orch_template</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('existing-clone', this)">コピー</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:4px;"><code>_orch_template</code> という一時フォルダにテンプレートを取得します。</p>
+
+      <p style="margin-top:20px;"><strong>Step 2 — 既存PJへコピーする（Windows）</strong></p>
+      <div class="url-form" style="margin-top:8px;">
+        <label>既存プロジェクトのフォルダパス</label>
+        <input type="text" id="existing-dest-input"
+          placeholder="C:\Users\あなたの名前\projects\my-existing-project"
+          value="">
+        <div class="hint">エクスプローラーのアドレスバーからコピーできます</div>
+      </div>
+      <div class="code-wrap" style="margin-top:10px;">
+        <pre><code id="existing-robocopy"># 既存プロジェクトのパスを上に入力すると自動で生成されます</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('existing-robocopy', this)">コピー</button>
+      </div>
+
+      <p style="margin-top:20px;"><strong>Step 3 — 一時フォルダを削除する</strong></p>
+      <div class="code-wrap">
+        <pre><code id="existing-cleanup">rmdir /s /q _orch_template</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('existing-cleanup', this)">コピー</button>
+      </div>
+
+      <p style="margin-top:20px;"><strong>Step 4 — セットアップを実行する</strong></p>
+      <div class="cmd-block">
+        <span class="prompt">$</span>
+        <code>cd &lt;既存PJのフォルダ&gt;</code>
+        <span class="cmd-desc">既存PJに移動</span>
+      </div>
+      <div class="cmd-block">
+        <span class="prompt">$</span>
+        <code>python tools/scripts/auto_setup.py</code>
+        <span class="cmd-desc">前提確認・notifications.json 作成</span>
+      </div>
+      <div class="cmd-block">
+        <span class="prompt">$</span>
+        <code>make setup</code>
+        <span class="cmd-desc">SSOT ハッシュ登録</span>
+      </div>
+
+      <!-- 注意点 -->
+      <h3 style="margin-top:28px;">③ CLAUDE.md と Makefile が既存にある場合</h3>
+
+      <div class="alert alert-warn">
+        <div class="alert-icon">⚠️</div>
+        <div>上書きコピーすると既存の内容が消えます。コピー前にバックアップするか、差分を手動でマージしてください。</div>
+      </div>
+
+      <table style="margin-top:12px;">
+        <tr><th>ファイル</th><th>対処法</th></tr>
+        <tr>
+          <td><code>CLAUDE.md</code></td>
+          <td>既存の内容を残しつつ、テンプレートの「必須セクション開始時に読むファイル」「ワークフロー」「絶対ルール」「コマンド」「ファイル構成」を追記する</td>
+        </tr>
+        <tr>
+          <td><code>Makefile</code></td>
+          <td>テンプレートの <code>loop-start / loop-run / loop-status / loop-stop / setup / test / ssot-check</code> ターゲットだけを既存 Makefile の末尾にコピーする</td>
+        </tr>
+        <tr>
+          <td><code>.gitignore</code></td>
+          <td><code>runtime/**</code> と <code>notifications.json</code> の2行を既存 .gitignore に追記するだけでOK</td>
+        </tr>
+      </table>
+
+      <div class="alert alert-ok" style="margin-top:20px;">
+        <div class="alert-icon">✅</div>
+        <div>コピー後は <strong>Step 4（SSOT 書き換え）→ Step 5（タスク定義）</strong> と同じ手順でセットアップを続けてください。</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 応用② テンプレート更新の反映                   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section id="sync-upstream">
+      <h2><span class="step-badge" style="background:var(--accent2); color:#000;">↑</span>テンプレートの更新を自分のPJに反映する</h2>
+      <p>テンプレートリポジトリ（<code>motegilab/ai-orchestrator-loop-claude</code>）に改善が加わったとき、自分のPJにも取り込む方法です。</p>
+
+      <div class="alert alert-info">
+        <div class="alert-icon">💡</div>
+        <div>GitHub の「Use this template」で作ったリポジトリはフォークではないため、自動で更新は届きません。手動で取り込む必要があります。</div>
+      </div>
+
+      <!-- upstream 登録 -->
+      <h3 style="margin-top:28px;">① upstream を一度だけ登録する</h3>
+      <p>新プロジェクトのフォルダで一度だけ実行します（2回目以降は不要）。</p>
+      <div class="code-wrap">
+        <pre><code id="upstream-add">git remote add upstream https://github.com/motegilab/ai-orchestrator-loop-claude.git
+git remote -v   # 確認</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('upstream-add', this)">コピー</button>
+      </div>
+
+      <!-- パターン選択 -->
+      <h3 style="margin-top:28px;">② 取り込み方を選ぶ</h3>
+
+      <table>
+        <tr><th>パターン</th><th>こんな時に使う</th><th>リスク</th></tr>
+        <tr>
+          <td>A. 特定ファイルだけ取得</td>
+          <td>hooks や scripts の一部だけ更新したい</td>
+          <td>低（他は変わらない）</td>
+        </tr>
+        <tr>
+          <td>B. まるごとマージ</td>
+          <td>大きな改善を全部取り込みたい</td>
+          <td>中（コンフリクトが出る場合あり）</td>
+        </tr>
+      </table>
+
+      <!-- パターンA -->
+      <h3 style="margin-top:24px; color:var(--accent2);">パターン A — 特定ファイルだけ取得（おすすめ）</h3>
+      <p>よく更新される hooks や scripts だけを選んで取り込みます。<code>SSOT.md</code> や <code>milestones.json</code> は上書きされません。</p>
+      <div class="code-wrap">
+        <pre><code id="sync-file">git fetch upstream
+
+# よく更新されるファイルを個別に取得
+git checkout upstream/main -- .claude/hooks/on_stop.py
+git checkout upstream/main -- .claude/hooks/post_tool_quality.py
+git checkout upstream/main -- tools/scripts/loop_run.py
+git checkout upstream/main -- tools/scripts/ssot_check.py
+
+# 取り込んだ内容を確認してコミット
+git diff --stat
+git commit -m "chore: sync hooks and scripts from upstream template"</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('sync-file', this)">コピー</button>
+      </div>
+
+      <!-- パターンB -->
+      <h3 style="margin-top:24px; color:var(--warn);">パターン B — まるごとマージ</h3>
+      <p>テンプレートの全変更をまとめて取り込みます。自分のPJに変更がある場合はコンフリクトが発生することがあります。</p>
+      <div class="code-wrap">
+        <pre><code id="sync-merge">git fetch upstream
+git merge upstream/main --allow-unrelated-histories</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('sync-merge', this)">コピー</button>
+      </div>
+
+      <h3 style="margin-top:20px;">コンフリクトが出たときの対処</h3>
+      <p>マージ後にコンフリクトが出た場合、以下のファイルは<strong>自分側を優先</strong>して解決してください。</p>
+      <table>
+        <tr><th>ファイル</th><th>理由</th></tr>
+        <tr><td><code>SSOT.md</code></td><td>PJ固有の設計を含むため、自分の内容を残す</td></tr>
+        <tr><td><code>CLAUDE.md</code></td><td>PJ固有の指示を含むため、自分の内容を残す</td></tr>
+        <tr><td><code>tasks/milestones.json</code></td><td>進行中のタスクが入っているため、自分の内容を残す</td></tr>
+        <tr><td><code>policy/ssot_integrity.json</code></td><td>SSOT ハッシュが記録されているため、自分の内容を残す</td></tr>
+      </table>
+
+      <div class="code-wrap" style="margin-top:12px;">
+        <pre><code id="conflict-resolve"># コンフリクトを「自分側で解決」するコマンド例
+git checkout --ours SSOT.md
+git checkout --ours CLAUDE.md
+git checkout --ours tasks/milestones.json
+git checkout --ours policy/ssot_integrity.json
+git add SSOT.md CLAUDE.md tasks/milestones.json policy/ssot_integrity.json
+git commit -m "chore: merge upstream, keep project-specific files"</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('conflict-resolve', this)">コピー</button>
+      </div>
+
+      <!-- 更新頻度の目安 -->
+      <h3 style="margin-top:28px;">③ どのくらいの頻度で確認すればいい？</h3>
+      <p>テンプレートリポジトリの <a href="https://github.com/motegilab/ai-orchestrator-loop-claude/releases" target="_blank" style="color:var(--accent);">Releases ページ</a> を見て、<strong>メジャー・マイナーアップデートのときだけ</strong>取り込む運用が現実的です。日常的な同期は不要です。</p>
+
+      <div class="alert alert-ok" style="margin-top:12px;">
+        <div class="alert-icon">✅</div>
+        <div>パッチ fix（バグ修正）だけが目的なら、パターン A で <code>.claude/hooks/</code> と <code>tools/scripts/</code> だけを取り込むのが最も安全です。</div>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -989,6 +1195,25 @@ if (urlInput)  { urlInput.addEventListener('input', updateCommands); }
 if (pathInput) { pathInput.addEventListener('input', updateCommands); }
 updateCommands();
 
+
+// ── 既存PJ導入コマンド生成 ───────────────────────────────────
+const existingDestInput = document.getElementById('existing-dest-input');
+const existingRobocopy  = document.getElementById('existing-robocopy');
+
+function updateExistingRobocopy() {
+  const dst = existingDestInput ? existingDestInput.value.trim() : '';
+  if (dst) {
+    existingRobocopy.textContent =
+      `# テンプレートから必要なフォルダ・ファイルだけをコピー\n` +
+      `robocopy "_orch_template" "${dst}" /E /XD .git runtime __pycache__ legacy src tests\n\n` +
+      `# ※ src/ tests/ は既存PJのものを残すため除外しています\n` +
+      `# ※ CLAUDE.md / Makefile が既存にある場合はマージが必要です（下の表を参照）`;
+  } else {
+    existingRobocopy.textContent = '# 既存プロジェクトのパスを上に入力すると自動で生成されます';
+  }
+}
+
+if (existingDestInput) { existingDestInput.addEventListener('input', updateExistingRobocopy); }
 
 // ── コピーボタン ──────────────────────────────────────────────
 function copyCode(elemId, btn) {
