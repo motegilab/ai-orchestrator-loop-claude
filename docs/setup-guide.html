@@ -942,7 +942,11 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
 
       <!-- 一発コマンド生成 -->
       <h3 style="margin-top:28px;">② 既存PJのパスを入力 → 一発コマンドを生成</h3>
-      <p>下にパスを入力すると、<strong>テンプレート取得 → ファイルコピー → 後片付け → セットアップ</strong> までの全工程が1つのコマンドブロックに生成されます。そのままコピーして PowerShell / Git Bash に貼り付けてください。</p>
+      <p>下にパスを入力すると、<strong>テンプレート取得 → ファイルコピー → 後片付け → セットアップ</strong> までの全工程が1つのコマンドブロックに生成されます。そのままコピーして PowerShell に貼り付けてください。</p>
+      <div class="alert alert-info" style="margin-top:8px; margin-bottom:4px;">
+        <div class="alert-icon">💡</div>
+        <div>一時フォルダは <strong>絶対パスで作成・削除</strong> されるため、PowerShell をどのフォルダで開いていても正しく動きます。</div>
+      </div>
 
       <div class="url-form">
         <label>既存プロジェクトのフォルダパス</label>
@@ -1182,15 +1186,17 @@ const existingResultTxt = document.getElementById('existing-result-text');
 function updateExistingFullCmd() {
   const dst = existingDestInput ? existingDestInput.value.trim() : '';
   if (dst) {
+    // 一時フォルダも絶対パスで指定（PowerShellのカレントディレクトリに依存しない）
+    const tmp = dst.replace(/\\+$/, '') + '\\_orch_tmp';
     existingFullCmd.textContent =
-`# ① テンプレートを一時フォルダに取得
-git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git _orch_tmp
+`# ① テンプレートを絶対パス指定で一時取得（どこで実行しても同じ結果になります）
+git clone https://github.com/motegilab/ai-orchestrator-loop-claude.git "${tmp}"
 
 # ② 必要なフォルダ・ファイルだけを既存PJへコピー（src/ tests/ README.md は除外）
-robocopy "_orch_tmp" "${dst}" /E /XD .git runtime __pycache__ legacy src tests /XF README.md
+robocopy "${tmp}" "${dst}" /E /XD .git runtime __pycache__ legacy src tests /XF README.md
 
 # ③ 一時フォルダを削除
-rmdir /s /q _orch_tmp
+rmdir /s /q "${tmp}"
 
 # ④ 既存PJへ移動してセットアップ実行
 cd "${dst}"
