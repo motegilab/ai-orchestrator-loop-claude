@@ -1191,7 +1191,27 @@ git merge upstream/main --allow-unrelated-histories</code></pre>
         <button class="copy-code-btn" onclick="copyCode('sync-merge', this)">コピー</button>
       </div>
 
-      <h3 style="margin-top:20px;">コンフリクトが出たときの対処</h3>
+      <!-- ORIG_HEAD.lock エラー -->
+      <h3 style="margin-top:24px; color:var(--danger);">⚠️ merge でエラーが出たとき</h3>
+      <p>以下のようなエラーが出た場合は、git のロックファイルが残っているのが原因です。</p>
+      <pre style="background:var(--code-bg); border:1px solid var(--danger); border-radius:8px; padding:14px; font-size:12px; color:#f87171; margin-bottom:12px; white-space:pre-wrap;">fatal: update_ref failed for ref 'ORIG_HEAD': cannot lock ref 'ORIG_HEAD':
+Unable to create '.../.git/ORIG_HEAD.lock': File exists.
+Another git process seems to be running in this repository...</pre>
+      <p>このファイルを削除してから、merge を再実行するだけで解決します。</p>
+      <div class="code-wrap">
+        <pre><code id="lock-fix"># ロックファイルを削除（PowerShell）
+Remove-Item ".git\ORIG_HEAD.lock" -Force
+
+# merge を再実行
+git merge upstream/main --allow-unrelated-histories</code></pre>
+        <button class="copy-code-btn" onclick="copyCode('lock-fix', this)">コピー</button>
+      </div>
+      <div class="alert alert-info" style="margin-top:10px;">
+        <div class="alert-icon">💡</div>
+        <div>VSCode や別のターミナルで同じフォルダの git 操作をしていたあとに残るファイルです。害はないので削除して問題ありません。</div>
+      </div>
+
+      <h3 style="margin-top:24px;">コンフリクトが出たときの対処</h3>
       <p>マージ後にコンフリクトが出た場合、以下のファイルは<strong>自分側を優先</strong>して解決してください。</p>
       <table>
         <tr><th>ファイル</th><th>理由</th></tr>
