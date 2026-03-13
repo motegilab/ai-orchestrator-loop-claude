@@ -1032,17 +1032,12 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
 
       <!-- 衝突ファイルの対処 -->
       <h3 style="margin-top:28px;">③ CLAUDE.md / Makefile が既存にある場合のマージ手順</h3>
-
-      <div class="alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div>上のコマンドは <code>CLAUDE.md</code> と <code>Makefile</code> を上書きします。<br>
-        <strong>既存ファイルの内容を残したい場合は、コマンド実行前に以下の手順でバックアップしてください。</strong></div>
-      </div>
+      <p style="font-size:13px; color:var(--text-muted);">上のコマンドは <code>CLAUDE.md</code> と <code>Makefile</code> を<strong>テンプレート版で上書き</strong>します。既存に内容がある場合は A→E の手順でマージしてください。ない場合はスキップして Step 4 へ進んでください。</p>
 
       <!-- Step A: バックアップ -->
       <div style="background:var(--surface2); border-left:3px solid var(--warn); border-radius:0 8px 8px 0; padding:16px 20px; margin:16px 0;">
-        <div style="font-weight:700; color:var(--warn); margin-bottom:8px;">Step A — コマンド実行前：既存ファイルをバックアップ</div>
-        <p style="font-size:13px; margin-bottom:10px;">PowerShell で実行（パスは既存PJのパスに置き換えてください）：</p>
+        <div style="font-weight:700; color:var(--warn); margin-bottom:6px;">Step A — ② のコマンドを実行する前にバックアップを取る</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">PowerShell で以下を実行すると、既存の3ファイルに <code>.bak</code> が付いたコピーが作られます。</p>
         <div class="code-wrap">
           <pre><code id="backup-cmd"># 既存PJのパスを上の入力欄に入れると自動で書き換わります</code></pre>
           <button class="copy-code-btn" onclick="copyCode('backup-cmd', this)">コピー</button>
@@ -1051,50 +1046,74 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
 
       <!-- Step B: コマンド実行（②の一発コマンド） -->
       <div style="background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:16px 20px; margin:16px 0;">
-        <div style="font-weight:700; color:var(--accent); margin-bottom:4px;">Step B — ② のコマンドを実行（上で生成したコマンドブロック）</div>
-        <p style="font-size:13px; color:var(--text-muted);">robocopy が CLAUDE.md・Makefile をテンプレート版で上書きします。</p>
+        <div style="font-weight:700; color:var(--accent); margin-bottom:4px;">Step B — ② のコマンドブロックを実行する（上で生成したもの）</div>
+        <p style="font-size:13px; color:var(--text-muted);">robocopy がテンプレートのファイルをコピーします。CLAUDE.md・Makefile は上書きされます（バックアップ済みなので大丈夫です）。</p>
       </div>
 
       <!-- Step C: CLAUDE.md マージ -->
       <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:16px 20px; margin:16px 0;">
-        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step C — CLAUDE.md に既存の内容を追記する</div>
-        <p style="font-size:13px; margin-bottom:10px;">バックアップから元の内容をコマンドで追記します（パスは上の入力欄から自動入力されます）：</p>
+        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step C — CLAUDE.md：バックアップの内容を末尾に追記する</div>
+        <p style="font-size:13px; margin-bottom:6px;">テンプレートの <code>CLAUDE.md</code> に書かれている内容はこれです（参考）：</p>
+        <div style="background:var(--code-bg); border:1px solid var(--border); border-radius:6px; padding:12px 16px; font-size:12px; color:var(--text-muted); margin-bottom:10px; font-family:monospace;">
+          <div style="color:var(--accent); margin-bottom:4px;">## 必須：セッション開始時に必ず読むファイル</div>
+          SSOT.md / runtime/runs/latest.json / REPORT_LATEST.md / milestones.json<br>
+          <div style="color:var(--accent); margin-top:8px; margin-bottom:4px;">## ワークフロー（Observe → Patch → Verify → Report）</div>
+          Observe → Patch → Verify → Report の4ステップ<br>
+          <div style="color:var(--accent); margin-top:8px; margin-bottom:4px;">## 絶対ルール / ## コマンド / ## ファイル構成 / ## レポートフォーマット</div>
+          Claude に守らせるルールとコマンド一覧
+        </div>
+        <p style="font-size:13px; margin-bottom:10px;">既存の内容をこの下に追記するコマンド（パスは入力欄から自動入力）：</p>
         <div class="code-wrap">
           <pre><code id="claudemd-merge-cmd"># 既存PJのパスを上の入力欄に入れると自動で書き換わります</code></pre>
           <button class="copy-code-btn" onclick="copyCode('claudemd-merge-cmd', this)">コピー</button>
         </div>
-        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">実行後、<code>CLAUDE.md</code> をVSCodeで開いて内容が重複していないか確認してください。<br>重複があれば古い方を手動で削除してください。</p>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">実行後、VSCode で <code>CLAUDE.md</code> を開いて内容が重複していないか目視確認し、重複があれば古い方を削除してください。<br>（VSCode でファイルを開く：エクスプローラー左ペインで <code>CLAUDE.md</code> をクリック）</p>
       </div>
 
       <!-- Step D: Makefile マージ -->
       <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:16px 20px; margin:16px 0;">
-        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step D — Makefile に既存のターゲットを追記する</div>
-        <p style="font-size:13px; margin-bottom:10px;">同じくバックアップから元の内容を追記します：</p>
+        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step D — Makefile：バックアップの既存ターゲットを末尾に追記する</div>
+        <p style="font-size:13px; margin-bottom:6px;">テンプレートが追加する Makefile ターゲット（これらはすでに上書きで入っています）：</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">loop-start</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">loop-run</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">loop-status</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">loop-stop</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">setup</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">test</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">ssot-check</span>
+          <span style="background:var(--code-bg); border:1px solid var(--border); border-radius:4px; padding:3px 10px; font-size:12px; font-family:monospace; color:var(--accent);">help</span>
+        </div>
+        <p style="font-size:13px; margin-bottom:10px;">既存プロジェクトのターゲット（バックアップ）をこれら8つの下に追記するコマンド：</p>
         <div class="code-wrap">
           <pre><code id="makefile-merge-cmd"># 既存PJのパスを上の入力欄に入れると自動で書き換わります</code></pre>
           <button class="copy-code-btn" onclick="copyCode('makefile-merge-cmd', this)">コピー</button>
         </div>
-        <div class="alert alert-info" style="margin-top:10px;">
-          <div class="alert-icon">💡</div>
-          <div>Makefile はインデントに<strong>タブ文字</strong>が必要です。テキストエディタで開いたとき、コマンドの先頭がスペースになっていたらタブに直してください（VSCode なら <kbd>Tab</kbd> キーで入力できます）。</div>
+        <div class="alert alert-warn" style="margin-top:10px;">
+          <div class="alert-icon">⚠️</div>
+          <div>Makefile はコマンド行の先頭に<strong>タブ文字</strong>が必要です。追記後 VSCode で開き、コマンド行（例: <code>python tools/...</code>）の先頭がスペースになっていたらタブ（<kbd>Tab</kbd>）に直してください。<br>
+          確認方法：VSCode の右下「スペース」をクリック → 「インデントをタブに変換」</div>
         </div>
       </div>
 
       <!-- Step E: .gitignore -->
       <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:16px 20px; margin:16px 0;">
-        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step E — .gitignore に2行追記する</div>
-        <p style="font-size:13px; margin-bottom:10px;">既存の <code>.gitignore</code> をVSCodeで開いて、ファイルの<strong>末尾に以下の2行を追加</strong>して保存してください：</p>
+        <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">Step E — .gitignore に2行追記する（コマンドで自動追記）</div>
+        <p style="font-size:13px; margin-bottom:10px;">以下のコマンドで <code>runtime/**</code> と <code>notifications.json</code> の2行を <code>.gitignore</code> の末尾に追加します。</p>
         <div class="code-wrap">
-          <pre><code id="gitignore-lines">runtime/**
-notifications.json</code></pre>
-          <button class="copy-code-btn" onclick="copyCode('gitignore-lines', this)">コピー</button>
+          <pre><code id="gitignore-append-cmd"># 既存PJのパスを上の入力欄に入れると自動で書き換わります</code></pre>
+          <button class="copy-code-btn" onclick="copyCode('gitignore-append-cmd', this)">コピー</button>
         </div>
-        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">VSCode での操作：エクスプローラーから <code>.gitignore</code> をクリック → ファイル末尾にカーソルを移動 → 上の2行を貼り付け → <kbd>Ctrl+S</kbd> で保存</p>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">実行後、VSCode で <code>.gitignore</code> を開いてファイル末尾に以下が追加されていることを確認してください：</p>
+        <div class="code-wrap" style="margin-top:6px;">
+          <pre><code>runtime/**
+notifications.json</code></pre>
+        </div>
       </div>
 
       <div class="alert alert-ok" style="margin-top:20px;">
         <div class="alert-icon">✅</div>
-        <div>マージ完了後は <strong>Step 4（SSOT 書き換え）→ Step 5（タスク定義）</strong> に進んでください。</div>
+        <div>マージ完了後は <strong>「✨ Claude に任せる」セクション</strong>のプロンプトを使って SSOT.md・タスク定義・ループ起動まで進めてください。</div>
       </div>
     </section>
 
@@ -1287,9 +1306,10 @@ const existingFullCmd   = document.getElementById('existing-full-cmd');
 const existingResultMsg = document.getElementById('existing-result-msg');
 const existingResultTxt = document.getElementById('existing-result-text');
 
-const backupCmd       = document.getElementById('backup-cmd');
-const claudeMdMerge   = document.getElementById('claudemd-merge-cmd');
-const makefileMerge   = document.getElementById('makefile-merge-cmd');
+const backupCmd         = document.getElementById('backup-cmd');
+const claudeMdMerge     = document.getElementById('claudemd-merge-cmd');
+const makefileMerge     = document.getElementById('makefile-merge-cmd');
+const gitignoreAppend   = document.getElementById('gitignore-append-cmd');
 
 function updateExistingFullCmd() {
   const dst = existingDestInput ? existingDestInput.value.trim() : '';
@@ -1338,6 +1358,15 @@ Add-Content -Path "${dst}\\Makefile" -Value "# ===== 既存プロジェクトの
 Get-Content "${dst}\\Makefile.bak" | Add-Content "${dst}\\Makefile"
 Write-Host "Makefile マージ完了。VSCode で重複・タブ文字がないか確認してください。"`;
 
+    // Step E: .gitignore 追記
+    if (gitignoreAppend) gitignoreAppend.textContent =
+`# .gitignore の末尾に runtime/** と notifications.json を追記する
+Add-Content -Path "${dst}\\.gitignore" -Value ""
+Add-Content -Path "${dst}\\.gitignore" -Value "# AI Orchestrator Loop"
+Add-Content -Path "${dst}\\.gitignore" -Value "runtime/**"
+Add-Content -Path "${dst}\\.gitignore" -Value "notifications.json"
+Write-Host ".gitignore に追記しました"`;
+
     if (existingResultMsg) existingResultMsg.style.display = 'flex';
     if (existingResultTxt) existingResultTxt.textContent =
       `「${dst}」にオーケストレーター層が追加されます。CLAUDE.md・Makefile が既存にある場合は下の手順でマージしてください。`;
@@ -1346,6 +1375,7 @@ Write-Host "Makefile マージ完了。VSCode で重複・タブ文字がない�
     if (backupCmd)        backupCmd.textContent        = '# 既存PJのパスを上の入力欄に入れると自動で書き換わります';
     if (claudeMdMerge)    claudeMdMerge.textContent    = '# 既存PJのパスを上の入力欄に入れると自動で書き換わります';
     if (makefileMerge)    makefileMerge.textContent    = '# 既存PJのパスを上の入力欄に入れると自動で書き換わります';
+    if (gitignoreAppend)  gitignoreAppend.textContent  = '# 既存PJのパスを上の入力欄に入れると自動で書き換わります';
     if (existingResultMsg) existingResultMsg.style.display = 'none';
   }
 }
