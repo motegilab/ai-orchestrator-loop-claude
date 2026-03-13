@@ -58,6 +58,17 @@ def get_last_report_source():
         return None
 
 
+def get_completed_milestone():
+    """on_stop.py が検出したマイルストーン完了情報を返す"""
+    if not LATEST.exists():
+        return None
+    try:
+        d = json.loads(LATEST.read_text(encoding="utf-8"))
+        return d.get("milestone_completed")
+    except Exception:
+        return None
+
+
 def print_status(msg):
     print(f"[loop-run] {msg}", flush=True)
 
@@ -179,5 +190,21 @@ for i in range(1, max_loops + 1):
             sys.exit(1)
     else:
         consecutive_incomplete = 0
+
+    # マイルストーン完了チェック
+    completed_ms = get_completed_milestone()
+    if completed_ms:
+        ms_id    = completed_ms.get("milestone_id", "?")
+        ms_title = completed_ms.get("milestone_title", "?")
+        print_status("=" * 56)
+        print_status(f"🎉 マイルストーン完了: [{ms_id}] {ms_title}")
+        print_status(f"   → milestone-review Skill を実行して")
+        print_status(f"     runtime/reports/MANUAL_CHECK_{ms_id}.html を生成してください")
+        print_status("=" * 56)
+        if not YES_ALL:
+            ans_ms = ask("[loop-run] レビュー生成のためにループを停止しますか? [Y/n]: ", default="y")
+            if ans_ms.lower() != "n":
+                print_status("停止しました。Claude に「マイルストーンレビューを実行して」と伝えてください。")
+                sys.exit(0)
 
 print_status("loop_run 終了。")
