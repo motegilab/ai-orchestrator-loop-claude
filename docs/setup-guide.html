@@ -1166,19 +1166,28 @@ git remote -v   # 確認</code></pre>
 
       <!-- パターンA -->
       <h3 style="margin-top:24px; color:var(--accent2);">パターン A — 特定ファイルだけ取得（おすすめ）</h3>
-      <p>よく更新される hooks や scripts だけを選んで取り込みます。<code>SSOT.md</code> や <code>milestones.json</code> は上書きされません。</p>
+      <p>よく更新される hooks・scripts・<strong>マニュアル</strong>だけを選んで取り込みます。<code>SSOT.md</code> や <code>milestones.json</code> は上書きされません。</p>
       <div class="code-wrap">
         <pre><code id="sync-file">git fetch upstream
 
-# よく更新されるファイルを個別に取得
+# ── 自動実行ファイル（バグ修正・機能追加）
 git checkout upstream/main -- .claude/hooks/on_stop.py
 git checkout upstream/main -- .claude/hooks/post_tool_quality.py
+git checkout upstream/main -- .claude/hooks/ssot_gate.py
 git checkout upstream/main -- tools/scripts/loop_run.py
 git checkout upstream/main -- tools/scripts/ssot_check.py
 
+# ── マニュアル（手順・トラブル対処の最新版）
+git checkout upstream/main -- docs/setup-guide.html
+git checkout upstream/main -- docs/onboarding-prompt.md
+git checkout upstream/main -- docs/ssot-setup-prompt.md
+
+# ── Skills（新Skillが追加されていた場合）
+git checkout upstream/main -- .claude/skills/
+
 # 取り込んだ内容を確認してコミット
 git diff --stat
-git commit -m "chore: sync hooks and scripts from upstream template"</code></pre>
+git commit -m "chore: sync hooks, scripts, docs from upstream template"</code></pre>
         <button class="copy-code-btn" onclick="copyCode('sync-file', this)">コピー</button>
       </div>
 
@@ -1445,14 +1454,21 @@ function updateSyncCmds() {
   if (syncFileCmd) syncFileCmd.textContent =
     cdLine +
     `git fetch upstream\n\n` +
-    `# よく更新されるファイルを個別に取得\n` +
+    `# ── 自動実行ファイル（バグ修正・機能追加）\n` +
     `git checkout upstream/main -- .claude/hooks/on_stop.py\n` +
     `git checkout upstream/main -- .claude/hooks/post_tool_quality.py\n` +
+    `git checkout upstream/main -- .claude/hooks/ssot_gate.py\n` +
     `git checkout upstream/main -- tools/scripts/loop_run.py\n` +
     `git checkout upstream/main -- tools/scripts/ssot_check.py\n\n` +
+    `# ── マニュアル（手順・トラブル対処の最新版）\n` +
+    `git checkout upstream/main -- docs/setup-guide.html\n` +
+    `git checkout upstream/main -- docs/onboarding-prompt.md\n` +
+    `git checkout upstream/main -- docs/ssot-setup-prompt.md\n\n` +
+    `# ── Skills（新Skillが追加されていた場合）\n` +
+    `git checkout upstream/main -- .claude/skills/\n\n` +
     `# 取り込んだ内容を確認してコミット\n` +
     `git diff --stat\n` +
-    `git commit -m "chore: sync hooks and scripts from upstream template"`;
+    `git commit -m "chore: sync hooks, scripts, docs from upstream template"`;
 
   if (syncMergeCmd) syncMergeCmd.textContent =
     cdLine +
