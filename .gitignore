@@ -25,6 +25,7 @@ notifications.json
 .vscode/settings.json
 .idea/
 
-# バックアップファイル
+# バックアップファイル・マージアーティファクト
 *.bak
 *.orig
+GNUmakefile

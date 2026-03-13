@@ -143,11 +143,16 @@ for i in range(1, max_loops + 1):
         print_status(f"全タスク完了。{i - 1} ループ実行しました。")
         break
 
-    # チェックポイント確認（このタスクを実行する前に停止）
+    # チェックポイント確認（このタスクを実行する前に確認）
     if next_task.get("checkpoint"):
         print_status(f"チェックポイント: {next_task['task_id']} — {next_task['task_title'][:50]}")
-        print_status("このタスクの前で停止します。確認後 make loop-run で再開してください。")
-        sys.exit(0)
+        if YES_ALL:
+            print_status("--yes フラグのためチェックポイントを通過します。")
+        else:
+            ans_cp = ask("[loop-run] このタスクを実行しますか? [y/N]: ", default="n")
+            if ans_cp.lower() != "y":
+                print_status("停止しました。確認後 make loop-run で再開してください。")
+                sys.exit(0)
 
     task_label = f"{next_task['task_id']} — {next_task['task_title'][:50]}"
     print_status(f"ループ {i}/{loops_label}: {task_label}")
