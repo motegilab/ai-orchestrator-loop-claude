@@ -1185,22 +1185,45 @@ git commit -m "chore: sync hooks and scripts from upstream template"</code></pre
       <!-- パターンB -->
       <h3 style="margin-top:24px; color:var(--warn);">パターン B — まるごとマージ</h3>
       <p>テンプレートの全変更をまとめて取り込みます。自分のPJに変更がある場合はコンフリクトが発生することがあります。</p>
+
+      <div class="alert alert-warn" style="margin-bottom:14px;">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>merge の前に必ず未コミットの変更をコミットしてください。</strong><br>
+        未コミットのファイルがあると <code>error: Your local changes would be overwritten by merge</code> が出て止まります。</div>
+      </div>
+
       <div class="code-wrap">
-        <pre><code id="sync-merge">git fetch upstream
-git merge upstream/main --allow-unrelated-histories</code></pre>
+        <pre><code id="sync-merge"># ① 未コミットの変更を先にコミット（重要）
+git add -A
+git commit -m "chore: commit local state before upstream merge"
+
+# ② upstream を取得してマージ
+git fetch upstream
+git merge upstream/main --allow-unrelated-histories
+
+# ③ マージ後に残ったファイルをコミット
+git add -A
+git commit -m "chore: upstream template をマージ、オーケストレーター層を追加"
+
+# ④ push
+git push</code></pre>
         <button class="copy-code-btn" onclick="copyCode('sync-merge', this)">コピー</button>
       </div>
 
-      <!-- ORIG_HEAD.lock エラー -->
-      <h3 style="margin-top:24px; color:var(--danger);">⚠️ merge でエラーが出たとき</h3>
-      <p>以下のようなエラーが出た場合は、git のロックファイルが残っているのが原因です。</p>
-      <pre style="background:var(--code-bg); border:1px solid var(--danger); border-radius:8px; padding:14px; font-size:12px; color:#f87171; margin-bottom:12px; white-space:pre-wrap;">fatal: update_ref failed for ref 'ORIG_HEAD': cannot lock ref 'ORIG_HEAD':
+      <!-- ロックファイルエラー -->
+      <h3 style="margin-top:24px; color:var(--danger);">⚠️ merge でロックエラーが出たとき</h3>
+      <p>以下のどちらかのエラーが出た場合は、git のロックファイルが残っているのが原因です。</p>
+      <pre style="background:var(--code-bg); border:1px solid var(--danger); border-radius:8px; padding:14px; font-size:12px; color:#f87171; margin-bottom:8px; white-space:pre-wrap;">fatal: update_ref failed for ref 'ORIG_HEAD': cannot lock ref 'ORIG_HEAD':
 Unable to create '.../.git/ORIG_HEAD.lock': File exists.
-Another git process seems to be running in this repository...</pre>
-      <p>このファイルを削除してから、merge を再実行するだけで解決します。</p>
+
+または
+
+error: Unable to create '.../.git/packed-refs.lock': File exists.</pre>
+      <p>対応するロックファイルを削除してから merge を再実行してください。</p>
       <div class="code-wrap">
-        <pre><code id="lock-fix"># ロックファイルを削除（PowerShell）
-Remove-Item ".git\ORIG_HEAD.lock" -Force
+        <pre><code id="lock-fix"># 該当するファイルを削除（どちらか or 両方）
+Remove-Item ".git\ORIG_HEAD.lock"   -Force -ErrorAction SilentlyContinue
+Remove-Item ".git\packed-refs.lock" -Force -ErrorAction SilentlyContinue
 
 # merge を再実行
 git merge upstream/main --allow-unrelated-histories</code></pre>
@@ -1208,7 +1231,7 @@ git merge upstream/main --allow-unrelated-histories</code></pre>
       </div>
       <div class="alert alert-info" style="margin-top:10px;">
         <div class="alert-icon">💡</div>
-        <div>VSCode や別のターミナルで同じフォルダの git 操作をしていたあとに残るファイルです。害はないので削除して問題ありません。</div>
+        <div>VSCode や別のターミナルが同じフォルダで git 操作した後に残るファイルです。害はなく削除して問題ありません。警告が出ても最後に <code>[main xxxxxxx]</code> と表示されれば成功です。</div>
       </div>
 
       <h3 style="margin-top:24px;">コンフリクトが出たときの対処</h3>
