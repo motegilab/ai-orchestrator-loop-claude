@@ -55,6 +55,8 @@ NS_ID: NS_AI_ORCHESTRATOR_LOOP_CLAUDE_SSOT
 
 ## §3 ループ仕様（Hook-Driven）
 
+**コンポーネント依存関係**: on_session_start.py → Claude作業 → on_stop.py → runtime/ の順で依存する。
+
 **1ループ**: make loop-start → SessionStart → Claude作業 → Stop → runtime更新
 
 ### §3.1 SessionStart Hook（on_session_start.py）
@@ -79,6 +81,17 @@ NS_ID: NS_AI_ORCHESTRATOR_LOOP_CLAUDE_SSOT
 ### §3.4 PostToolUse Hook（post_tool_quality.py）
 - matcher: Write|Edit
 - 全実行を runtime/artifacts/audit_log.jsonl に記録
+
+---
+
+## §3.5 インターフェース契約
+
+| コンポーネント | 入力 | 出力 |
+|---|---|---|
+| on_session_start.py | なし | stdout（ClaudeのadditionalContext） |
+| on_stop.py | なし | runtime/runs/latest.json, REPORT_LATEST.md, next_session.md |
+| ssot_gate.py | ツール呼び出し情報 | exit 0（許可）/ exit 2（ブロック） |
+| loop_run.py | N（ループ回数） | exit 0（正常）/ exit 1（異常） |
 
 ---
 
