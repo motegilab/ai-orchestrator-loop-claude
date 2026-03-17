@@ -400,13 +400,11 @@
   <nav>
     <div class="section-label">はじめに</div>
     <ul>
-      <li><a href="#step0" style="color:var(--warn); font-weight:700;">Step 0: 環境準備（まずここから）</a></li>
-      <li><a href="#quickstart" style="color:var(--accent2); font-weight:700;">🚀 クイックスタート</a></li>
+      <li><a href="#step0" style="color:var(--warn); font-weight:700;">Step 0: 初回セットアップ（まずここから）</a></li>
       <li><a href="#overview">概要</a></li>
     </ul>
-    <div class="section-label">セットアップ</div>
+    <div class="section-label">セットアップ（詳細）</div>
     <ul>
-      <li><a href="#step1">Step 1: リポジトリ作成</a></li>
       <li><a href="#step2">Step 2: 自動セットアップ</a></li>
       <li><a href="#step3">Step 3: Discord 通知（任意）</a></li>
       <li><a href="#claude-setup" style="color:var(--accent2); font-weight:700;">✨ Claude に任せる</a></li>
@@ -432,191 +430,175 @@
   <!-- ── メイン ── -->
   <main>
 
-    <!-- Step 0 -->
+    <!-- Step 0: 初回セットアップ -->
     <section id="step0" style="border-color: var(--warn); background: linear-gradient(135deg, #2a1f0a 0%, #1a1d27 100%);">
-      <h2><span class="step-badge" style="background:var(--warn); color:#000;">0</span>環境を準備する — まずここから</h2>
-      <p>Claude Code が動く環境を作ります。すでに揃っている場合は <a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> へ進んでください。</p>
+      <h2><span class="step-badge" style="background:var(--warn); color:#000;">0</span>初回セットアップ — この順番で進める</h2>
+      <p style="color:var(--text-muted); margin-bottom:24px;">① から ⑦ まで順番に進めてください。すでに終わっているステップはスキップしてOKです。</p>
 
-      <!-- エディタ選択タブ -->
-      <div style="display:flex; gap:8px; margin:20px 0 0;">
-        <button id="tab-vscode-btn" onclick="switchEditor('vscode')"
-          style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--accent); border-bottom:none; background:var(--accent); color:#fff; font-weight:700; cursor:pointer; font-size:13px;">
-          VSCode（推奨）
-        </button>
-        <button id="tab-cursor-btn" onclick="switchEditor('cursor')"
-          style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--border); border-bottom:none; background:var(--surface2); color:var(--text-muted); font-weight:700; cursor:pointer; font-size:13px;">
-          Cursor
-        </button>
-      </div>
+      <!-- ① テンプレートをクローンする -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">① テンプレートから自分のリポジトリを作ってクローンする</h3>
 
-      <!-- VSCode タブ -->
-      <div id="tab-vscode" style="border:2px solid var(--accent); border-radius:0 8px 8px 8px; padding:20px 24px;">
-        <ol style="line-height:2.4;">
-          <li>
-            <strong>VSCode をインストール</strong><br>
-            <a href="https://code.visualstudio.com/" target="_blank" style="color:var(--accent);">code.visualstudio.com</a> からダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Node.js をインストール</strong>（Claude Code の動作に必要）<br>
-            <a href="https://nodejs.org/" target="_blank" style="color:var(--accent);">nodejs.org</a> の LTS 版をダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Git をインストール</strong>（未インストールの場合）<br>
-            <a href="https://git-scm.com/" target="_blank" style="color:var(--accent);">git-scm.com</a> からダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Claude Code CLI をインストール</strong><br>
-            PowerShell を開いて実行：
-            <div class="code-wrap" style="margin:6px 0;"><pre><code id="install-claude-vscode">npm install -g @anthropic-ai/claude-code</code></pre><button class="copy-code-btn" onclick="copyCode('install-claude-vscode',this)">コピー</button></div>
-          </li>
-          <li>
-            <strong>Claude にログイン</strong><br>
-            <div class="code-wrap" style="margin:6px 0;"><pre><code id="login-claude-vscode">claude login</code></pre><button class="copy-code-btn" onclick="copyCode('login-claude-vscode',this)">コピー</button></div>
-            ブラウザが開くので Anthropic アカウントでログインしてください。
-          </li>
-          <li>
-            <strong>プロジェクトを置くフォルダを決める</strong><br>
-            例: <code>C:\Users\あなたの名前\projects\</code><br>
-            <span style="font-size:13px; color:var(--text-muted);">エクスプローラーで作成するか、PowerShell で <code>mkdir C:\Users\あなたの名前\projects</code></span>
-          </li>
-          <li>
-            <strong>VSCode でそのフォルダを開く</strong><br>
-            VSCode → ファイル → フォルダーを開く → 上のフォルダを選択
-          </li>
-          <li>
-            <strong>Claude Code を起動する — 2通りの方法</strong>
-            <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px;">
-              <div style="border:2px solid var(--accent2); border-radius:8px; padding:14px 18px;">
-                <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">★ 方法A：VSCode 拡張機能（おすすめ）</div>
-                <ol style="margin:0; padding-left:20px; line-height:2.2;">
-                  <li>Extensions パネル（Ctrl+Shift+X）を開く</li>
-                  <li>「Claude Code」を検索してインストール</li>
-                  <li>サイドバーに Claude アイコンが出たらクリック</li>
-                  <li><a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> のプロンプトをチャット欄に貼り付ける</li>
-                </ol>
-                <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">拡張機能経由では Stop Hook も正常動作します。</div>
-              </div>
-              <div style="border:1px solid var(--border); border-radius:8px; padding:14px 18px; background:var(--surface2);">
-                <div style="font-weight:700; color:var(--text-muted); margin-bottom:8px;">方法B：外部 PowerShell から CLI 起動</div>
-                <div class="alert alert-warn" style="margin:6px 0; padding:8px 12px; font-size:13px;">
-                  <div class="alert-icon">⚠️</div>
-                  <div>VSCode 統合ターミナルではなく<strong>スタートメニューから PowerShell を別途起動</strong>してください。統合ターミナルでは Stop Hook が動かない場合があります。</div>
-                </div>
-                <div class="code-wrap" style="margin:6px 0;"><pre><code id="start-claude-vscode">cd "C:\Users\あなたの名前\projects"
-claude</code></pre><button class="copy-code-btn" onclick="copyCode('start-claude-vscode',this)">コピー</button></div>
-              </div>
+        <div class="alert alert-info" style="margin-bottom:16px;">
+          <div class="alert-icon">💡</div>
+          <div><strong>Git が必要です。</strong>入っていない場合は先に <a href="https://git-scm.com/" target="_blank" style="color:var(--accent);">git-scm.com</a> からインストールしてください。</div>
+        </div>
+
+        <!-- GitHub/local 関係図 -->
+        <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin-bottom:16px;">
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; text-align:center;">
+            <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px;">
+              <div style="font-size:24px; margin-bottom:6px;">☁️</div>
+              <div style="font-weight:700; color:#fff; font-size:13px; margin-bottom:4px;">GitHub（クラウド）</div>
+              <div style="font-size:11px; color:var(--text-muted);">テンプレートが置いてある場所</div>
             </div>
-          </li>
-        </ol>
-      </div>
-
-      <!-- Cursor タブ -->
-      <div id="tab-cursor" style="border:2px solid var(--border); border-radius:0 8px 8px 8px; padding:20px 24px; display:none;">
-        <ol style="line-height:2.4;">
-          <li>
-            <strong>Cursor をインストール</strong><br>
-            <a href="https://cursor.sh/" target="_blank" style="color:var(--accent);">cursor.sh</a> からダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Node.js をインストール</strong>（Claude Code の動作に必要）<br>
-            <a href="https://nodejs.org/" target="_blank" style="color:var(--accent);">nodejs.org</a> の LTS 版をダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Git をインストール</strong>（未インストールの場合）<br>
-            <a href="https://git-scm.com/" target="_blank" style="color:var(--accent);">git-scm.com</a> からダウンロードしてインストール
-          </li>
-          <li>
-            <strong>Claude Code CLI をインストール</strong><br>
-            PowerShell を開いて実行：
-            <div class="code-wrap" style="margin:6px 0;"><pre><code id="install-claude-cursor">npm install -g @anthropic-ai/claude-code</code></pre><button class="copy-code-btn" onclick="copyCode('install-claude-cursor',this)">コピー</button></div>
-          </li>
-          <li>
-            <strong>Claude にログイン</strong><br>
-            <div class="code-wrap" style="margin:6px 0;"><pre><code id="login-claude-cursor">claude login</code></pre><button class="copy-code-btn" onclick="copyCode('login-claude-cursor',this)">コピー</button></div>
-          </li>
-          <li>
-            <strong>プロジェクトを置くフォルダを決める</strong><br>
-            例: <code>C:\Users\あなたの名前\projects\</code>
-          </li>
-          <li>
-            <strong>Cursor でそのフォルダを開く</strong><br>
-            Cursor → File → Open Folder → 上のフォルダを選択
-          </li>
-          <li>
-            <strong>Claude Code を起動する — 2通りの方法</strong>
-            <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px;">
-              <div style="border:2px solid var(--accent2); border-radius:8px; padding:14px 18px;">
-                <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">★ 方法A：Cursor 拡張機能（おすすめ）</div>
-                <ol style="margin:0; padding-left:20px; line-height:2.2;">
-                  <li>Extensions パネル（Ctrl+Shift+X）を開く</li>
-                  <li>「Claude Code」を検索してインストール</li>
-                  <li>サイドバーに Claude アイコンが出たらクリック</li>
-                  <li><a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> のプロンプトをチャット欄に貼り付ける</li>
-                </ol>
-                <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">拡張機能経由では Stop Hook も正常動作します。</div>
-              </div>
-              <div style="border:1px solid var(--border); border-radius:8px; padding:14px 18px; background:var(--surface2);">
-                <div style="font-weight:700; color:var(--text-muted); margin-bottom:8px;">方法B：外部 PowerShell から CLI 起動</div>
-                <div class="alert alert-warn" style="margin:6px 0; padding:8px 12px; font-size:13px;">
-                  <div class="alert-icon">⚠️</div>
-                  <div>Cursor 内蔵ターミナルでも動く場合がありますが、<strong>Stop Hook の確実な動作のため外部 PowerShell を推奨します。</strong></div>
-                </div>
-                <div class="code-wrap" style="margin:6px 0;"><pre><code id="start-claude-cursor">cd "C:\Users\あなたの名前\projects"
-claude</code></pre><button class="copy-code-btn" onclick="copyCode('start-claude-cursor',this)">コピー</button></div>
-              </div>
+            <div style="font-size:20px; color:var(--accent);">⇄</div>
+            <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px;">
+              <div style="font-size:24px; margin-bottom:6px;">💻</div>
+              <div style="font-weight:700; color:#fff; font-size:13px; margin-bottom:4px;">ローカル（自分のPC）</div>
+              <div style="font-size:11px; color:var(--text-muted);">Claude を動かす場所</div>
             </div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- 🚀 初心者向けクイックスタート -->
-    <section id="quickstart" style="border-color: var(--accent); background: linear-gradient(135deg, #1a1d35 0%, #1a1d27 100%);">
-      <h2><span class="step-badge">🚀</span>クイックスタート — この順番で進める</h2>
-
-      <!-- 3ステップ概要 -->
-      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:1px solid var(--border); border-radius:8px;">
-          <div style="font-size:22px; font-weight:900; color:var(--warn); min-width:32px;">1</div>
-          <div>
-            <strong>環境を準備する</strong>（まだの場合）<br>
-            <span style="font-size:13px; color:var(--text-muted);">VSCode/Cursor + Node.js + Claude Code CLI → <a href="#step0" style="color:var(--warn);">Step 0</a> を参照</span>
+          </div>
+          <div style="margin-top:12px; font-size:12px; color:var(--text-muted); text-align:center;">
+            <code>git clone</code> = GitHub からローカルにコピーする
           </div>
         </div>
-        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:1px solid var(--border); border-radius:8px;">
-          <div style="font-size:22px; font-weight:900; color:var(--warn); min-width:32px;">2</div>
-          <div>
-            <strong>テンプレートからリポジトリを作成してクローンする</strong><br>
-            <span style="font-size:13px; color:var(--text-muted);"><a href="https://github.com/motegilab/ai-orchestrator-loop-claude" target="_blank" style="color:var(--accent);">github.com/motegilab/ai-orchestrator-loop-claude</a> を開いて「Use this template」→ クローン → <strong>そのフォルダで Claude を起動する</strong></span>
-          </div>
+
+        <!-- Use this template ボタン -->
+        <div style="background:linear-gradient(135deg,#1e2a4a,#1a1d27); border:2px solid var(--accent); border-radius:12px; padding:20px 24px; margin-bottom:16px; text-align:center;">
+          <div style="font-size:13px; font-weight:700; letter-spacing:1.5px; color:var(--accent); text-transform:uppercase; margin-bottom:8px;">STEP 1 — まずここを開く</div>
+          <div style="font-size:14px; color:var(--text); margin-bottom:14px;">下のボタンでテンプレートを開いて <strong style="color:#fff;">Use this template</strong> → <strong style="color:#fff;">Create a new repository</strong> をクリック</div>
+          <a href="https://github.com/motegilab/ai-orchestrator-loop-claude"
+             target="_blank"
+             style="display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff; font-weight:700; font-size:14px; padding:10px 24px; border-radius:8px; text-decoration:none;"
+             onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            テンプレートを開く — github.com/motegilab/ai-orchestrator-loop-claude
+          </a>
         </div>
-        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:2px solid var(--accent2); border-radius:8px; background:rgba(0,200,120,0.06);">
-          <div style="font-size:22px; font-weight:900; color:var(--accent2); min-width:32px;">3</div>
-          <div>
-            <strong>プロンプトを Claude に貼る</strong><br>
-            <span style="font-size:13px; color:var(--text-muted);">クローンしたフォルダで Claude を起動して、下のプロンプトを貼るだけ。SSOT・タスク定義・ループ起動まで全部 AI が案内してくれます。</span>
+
+        <!-- URL + path inputs → clone command auto-generator -->
+        <div class="url-form">
+          <label>② 作成したリポジトリの URL を貼る</label>
+          <input type="text" id="repo-url-input"
+            placeholder="https://github.com/あなたのID/my-ai-project.git"
+            value="">
+          <div class="hint">GitHub の Code ▼ ボタン → Clone → HTTPS の URL をコピーして貼る</div>
+
+          <label style="margin-top:18px;">③ クローン先のフォルダパスを入力する</label>
+          <input type="text" id="local-path-input"
+            placeholder="C:\Users\あなたの名前\projects"
+            value="">
+          <div class="hint">ここの直下にリポジトリ名のフォルダが作られます。エクスプローラーのアドレスバーからコピーできます。</div>
+        </div>
+
+        <h3 style="margin:20px 0 8px;">④ 生成されたコマンドをそのまま実行する</h3>
+        <p style="font-size:13px; color:var(--text-muted);">PowerShell または Git Bash を開いて貼り付けてください。</p>
+        <div class="code-wrap">
+          <pre><code id="clone-cmd"># ② ③ の欄を埋めると、ここが自動で書き換わります</code></pre>
+          <button class="copy-code-btn" onclick="copyCode('clone-cmd', this)">コピー</button>
+        </div>
+        <div class="alert alert-ok" style="margin-top:10px;">
+          <div class="alert-icon">✅</div>
+          <div id="clone-result-msg">URL とローカルパスを入力するとコマンドが生成されます。</div>
+        </div>
+      </div>
+
+      <!-- ② エディタをインストールする -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">② エディタをインストールする</h3>
+        <div style="display:flex; gap:8px; margin-bottom:0;">
+          <button id="tab-vscode-btn" onclick="switchEditor('vscode')"
+            style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--accent); border-bottom:none; background:var(--accent); color:#fff; font-weight:700; cursor:pointer; font-size:13px;">
+            VSCode（推奨）
+          </button>
+          <button id="tab-cursor-btn" onclick="switchEditor('cursor')"
+            style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--border); border-bottom:none; background:var(--surface2); color:var(--text-muted); font-weight:700; cursor:pointer; font-size:13px;">
+            Cursor
+          </button>
+        </div>
+        <div id="tab-vscode" style="border:2px solid var(--accent); border-radius:0 8px 8px 8px; padding:16px 20px;">
+          <a href="https://code.visualstudio.com/" target="_blank" style="color:var(--accent);">code.visualstudio.com</a> からダウンロードしてインストール
+        </div>
+        <div id="tab-cursor" style="border:2px solid var(--border); border-radius:0 8px 8px 8px; padding:16px 20px; display:none;">
+          <a href="https://cursor.sh/" target="_blank" style="color:var(--accent);">cursor.sh</a> からダウンロードしてインストール
+        </div>
+      </div>
+
+      <!-- ③ Node.js をインストールする -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">③ Node.js をインストールする</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Claude Code CLI の動作に必要です。</p>
+        <a href="https://nodejs.org/" target="_blank" style="color:var(--accent);">nodejs.org</a> の <strong>LTS 版</strong>をダウンロードしてインストール
+      </div>
+
+      <!-- ④ Claude Code CLI をインストールする -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">④ Claude Code CLI をインストールする</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Node.js をインストール後、PowerShell で実行：</p>
+        <div class="code-wrap">
+          <pre><code id="install-claude">npm install -g @anthropic-ai/claude-code</code></pre>
+          <button class="copy-code-btn" onclick="copyCode('install-claude', this)">コピー</button>
+        </div>
+      </div>
+
+      <!-- ⑤ Claude にログインする -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">⑤ Claude にログインする</h3>
+        <div class="code-wrap">
+          <pre><code id="login-claude">claude login</code></pre>
+          <button class="copy-code-btn" onclick="copyCode('login-claude', this)">コピー</button>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">ブラウザが開くので Anthropic アカウントでログインしてください。</p>
+      </div>
+
+      <!-- ⑥ クローンしたフォルダをエディタで開いて Claude を起動する -->
+      <div style="border-left:4px solid var(--accent); padding-left:20px; margin-bottom:32px;">
+        <h3 style="margin:0 0 12px;">⑥ クローンしたフォルダをエディタで開いて Claude を起動する</h3>
+        <div class="alert alert-warn" style="margin-bottom:16px;">
+          <div class="alert-icon">⚠️</div>
+          <div><strong>クローンしたフォルダの中で Claude を起動してください。</strong> フォルダの外から起動すると CLAUDE.md が読み込まれず、AI がシステムを理解できません。</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="border:2px solid var(--accent2); border-radius:8px; padding:14px 18px;">
+            <div style="font-weight:700; color:var(--accent2); margin-bottom:8px;">★ 方法A：拡張機能（おすすめ）</div>
+            <ol style="margin:0; padding-left:20px; line-height:2.2;">
+              <li>エディタでクローンしたフォルダを開く（File → Open Folder）</li>
+              <li>Extensions パネル（Ctrl+Shift+X）→「Claude Code」を検索してインストール</li>
+              <li>サイドバーに Claude アイコンが出たらクリック</li>
+            </ol>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">拡張機能経由では Stop Hook も正常動作します。</div>
+          </div>
+          <div style="border:1px solid var(--border); border-radius:8px; padding:14px 18px; background:var(--surface2);">
+            <div style="font-weight:700; color:var(--text-muted); margin-bottom:8px;">方法B：外部 PowerShell から CLI 起動</div>
+            <div class="alert alert-warn" style="margin:6px 0; padding:8px 12px; font-size:13px;">
+              <div class="alert-icon">⚠️</div>
+              <div>VSCode/Cursor の統合ターミナルではなく<strong>スタートメニューから PowerShell を別途起動</strong>してください。Stop Hook が統合ターミナルでは動かない場合があります。</div>
+            </div>
+            <div class="code-wrap" style="margin:6px 0;">
+              <pre><code id="start-claude">cd "クローンしたフォルダのパス"
+claude</code></pre>
+              <button class="copy-code-btn" onclick="copyCode('start-claude', this)">コピー</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="alert alert-warn" style="margin-bottom:16px;">
-        <div class="alert-icon">⚠️</div>
-        <div><strong>必ず「クローンしたフォルダの中」で Claude を起動してからプロンプトを貼ってください。</strong><br>
-        フォルダの外から起動すると CLAUDE.md が読み込まれず、AI がシステムを理解できません。</div>
-      </div>
-
-      <div class="copybox">
-        <div class="copybox-label">コピペ用プロンプト（Claude に貼り付ける）</div>
-        <pre><code id="onboarding-prompt">docs/onboarding-prompt.md の内容をコピーしてください。
+      <!-- ⑦ ファーストプロンプトを貼る -->
+      <div style="border-left:4px solid var(--accent2); padding-left:20px; margin-bottom:8px;">
+        <h3 style="margin:0 0 12px; color:var(--accent2);">⑦ ファーストプロンプトを貼る</h3>
+        <p>Claude が起動したら下のプロンプトを貼るだけ。SSOT 作成・タスク定義・ループ起動まで全部 AI が案内してくれます。</p>
+        <div class="copybox">
+          <div class="copybox-label">コピペ用プロンプト（Claude に貼り付ける）</div>
+          <pre><code id="onboarding-prompt">docs/onboarding-prompt.md の内容をコピーしてください。
 ファイルを開いて「▼ここからコピー▼」〜「▲ここまでコピー▲」の部分を
 Claude のチャットに貼り付けるだけで始められます。</code></pre>
-        <a href="onboarding-prompt.md" style="display:inline-block; background:var(--accent); color:#fff; border-radius:6px; padding:8px 20px; font-size:13px; font-weight:600; margin-top:14px; text-decoration:none;">
-          プロンプトファイルを開く →
-        </a>
+          <a href="onboarding-prompt.md" style="display:inline-block; background:var(--accent); color:#fff; border-radius:6px; padding:8px 20px; font-size:13px; font-weight:600; margin-top:14px; text-decoration:none;">
+            プロンプトファイルを開く →
+          </a>
+        </div>
       </div>
-      <p style="margin-top:12px; color:var(--text-muted); font-size:13px;">
-        詳細な手順が必要な場合や、トラブル対処は以下の各 Step を参照してください。
-      </p>
+
     </section>
 
     <!-- 概要 -->
@@ -647,104 +629,6 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
       </div>
     </section>
 
-
-    <!-- Step 1 -->
-    <section id="step1">
-      <h2><span class="step-badge">1</span>リポジトリを作成してローカルに持ってくる</h2>
-
-      <!-- GitHub とローカルの関係図 -->
-      <h3>まず知っておくこと — GitHub とローカルフォルダの関係</h3>
-      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:20px 24px; margin:12px 0;">
-        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; text-align:center;">
-          <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
-            <div style="font-size:28px; margin-bottom:8px;">☁️</div>
-            <div style="font-weight:700; color:#fff; margin-bottom:4px;">GitHub（クラウド）</div>
-            <div style="font-size:12px; color:var(--text-muted);">ファイルがインターネット上に保存されている場所。ブラウザで見れる。</div>
-          </div>
-          <div style="font-size:24px; color:var(--accent);">⇄</div>
-          <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px;">
-            <div style="font-size:28px; margin-bottom:8px;">💻</div>
-            <div style="font-weight:700; color:#fff; margin-bottom:4px;">ローカル（自分のPC）</div>
-            <div style="font-size:12px; color:var(--text-muted);">あなたのパソコン上のフォルダ。実際にコマンドを動かす場所。</div>
-          </div>
-        </div>
-        <div style="margin-top:16px; font-size:13px; color:var(--text-muted); text-align:center;">
-          <code>git clone</code> = GitHub からローカルにコピーする ／
-          <code>git push</code> = ローカルから GitHub にアップする
-        </div>
-      </div>
-
-      <div class="alert alert-info">
-        <div class="alert-icon">💡</div>
-        <div><strong>ローカルフォルダは自分で作らなくてOKです。</strong>
-        <code>git clone</code> を実行すると、自動でフォルダが作られてファイルがそこにコピーされます。</div>
-      </div>
-
-      <!-- ① GitHub でリポジトリを作る -->
-      <div style="background:linear-gradient(135deg,#1e2a4a,#1a1d27); border:2px solid var(--accent); border-radius:12px; padding:24px 28px; margin:20px 0; text-align:center;">
-        <div style="font-size:13px; font-weight:700; letter-spacing:1.5px; color:var(--accent); text-transform:uppercase; margin-bottom:10px;">START HERE — まずここから</div>
-        <div style="font-size:15px; color:var(--text); margin-bottom:16px;">下のテンプレートリポジトリを開いて <strong style="color:#fff;">Use this template</strong> ボタンを押してください。</div>
-        <a href="https://github.com/motegilab/ai-orchestrator-loop-claude"
-           target="_blank"
-           style="display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff; font-weight:700; font-size:15px; padding:12px 28px; border-radius:8px; text-decoration:none; transition:opacity 0.2s;"
-           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          テンプレートを開く — github.com/motegilab/ai-orchestrator-loop-claude
-        </a>
-        <div style="margin-top:12px; font-size:12px; color:var(--text-muted);">ページを開いたら緑の <strong>Use this template</strong> → <strong>Create a new repository</strong> を選択してください。</div>
-      </div>
-
-      <h3 style="margin-top:24px;">① GitHub でリポジトリを作る</h3>
-      <ol>
-        <li>上のボタンでテンプレートリポジトリを開く</li>
-        <li>緑色の <strong>Use this template</strong> ボタンをクリック</li>
-        <li><strong>Create a new repository</strong> を選択</li>
-        <li>Repository name に新しいプロジェクト名を入力（例: <code>my-ai-project</code>）</li>
-        <li>Public / Private を選んで <strong>Create repository</strong> をクリック</li>
-        <li>作成されたページで <strong>Code ▼</strong> ボタン → URL をコピー（<code>.git</code> で終わる URL）</li>
-      </ol>
-
-      <!-- ② URL を入力 → コマンド自動生成 -->
-      <h3 style="margin-top:24px;">② あなたのリポジトリ URL を入力する</h3>
-      <p>コピーした URL をここに貼ると、下のコマンドが自動で書き換わります。</p>
-
-      <div class="url-form">
-        <label>① あなたの GitHub リポジトリ URL</label>
-        <input type="text" id="repo-url-input"
-          placeholder="https://github.com/あなたのID/my-ai-project.git"
-          value="">
-        <div class="hint">GitHub の Code ▼ ボタンからコピーした URL を貼る</div>
-
-        <label style="margin-top:18px;">② プロジェクトを作りたいフォルダのパス</label>
-        <input type="text" id="local-path-input"
-          placeholder="C:\Users\あなたの名前\projects"
-          value="">
-        <div class="hint">エクスプローラーのアドレスバーからコピーできます。ここの直下にフォルダが作られます。</div>
-      </div>
-
-      <!-- ③ 自動生成されるコマンド -->
-      <h3 style="margin-top:24px;">③ 生成されたコマンドをそのまま実行する</h3>
-      <p>ターミナル（PowerShell / Git Bash）を開いて、下のコマンドをまるごとコピーして貼り付けてください。</p>
-
-      <div class="code-wrap">
-        <pre><code id="clone-cmd"># ① 上の2つの欄を埋めると、ここが自動で書き換わります</code></pre>
-        <button class="copy-code-btn" onclick="copyCode('clone-cmd', this)">コピー</button>
-      </div>
-
-      <div class="alert alert-ok" style="margin-top:12px;">
-        <div class="alert-icon">✅</div>
-        <div id="clone-result-msg">URL とローカルパスを入力すると、実行すべきコマンドが生成されます。</div>
-      </div>
-
-      <h3 style="margin-top:24px;">ターミナルはどこで開く？（Windows の場合）</h3>
-      <table>
-        <tr><th>方法</th><th>操作</th></tr>
-        <tr><td>エクスプローラーから</td><td>プロジェクトを置きたいフォルダを開いて、アドレスバーに <code>cmd</code> と入力して Enter</td></tr>
-        <tr><td>スタートメニューから</td><td>「Git Bash」または「PowerShell」を検索して起動、その後 <code>cd</code> で移動</td></tr>
-        <tr><td>VSCode から</td><td>VSCode を開いて Ctrl+` でターミナルを開く</td></tr>
-      </table>
-
-    </section>
 
     <!-- Step 2 -->
     <section id="step2">
