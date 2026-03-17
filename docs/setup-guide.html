@@ -572,31 +572,47 @@ claude</code></pre><button class="copy-code-btn" onclick="copyCode('start-claude
 
     <!-- 🚀 初心者向けクイックスタート -->
     <section id="quickstart" style="border-color: var(--accent); background: linear-gradient(135deg, #1a1d35 0%, #1a1d27 100%);">
-      <h2><span class="step-badge">🚀</span>初めての方へ — これだけでOK</h2>
-      <div class="alert alert-info" style="margin-bottom:16px;">
-        <div class="alert-icon">💡</div>
-        <div>Claude Code がまだ入っていない場合は <a href="#step0" style="color:var(--warn); font-weight:700;">Step 0</a> を先に完了してください。</div>
+      <h2><span class="step-badge">🚀</span>クイックスタート — この順番で進める</h2>
+
+      <!-- 3ステップ概要 -->
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:1px solid var(--border); border-radius:8px;">
+          <div style="font-size:22px; font-weight:900; color:var(--warn); min-width:32px;">1</div>
+          <div>
+            <strong>環境を準備する</strong>（まだの場合）<br>
+            <span style="font-size:13px; color:var(--text-muted);">VSCode/Cursor + Node.js + Claude Code CLI → <a href="#step0" style="color:var(--warn);">Step 0</a> を参照</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:1px solid var(--border); border-radius:8px;">
+          <div style="font-size:22px; font-weight:900; color:var(--warn); min-width:32px;">2</div>
+          <div>
+            <strong>テンプレートからリポジトリを作成してクローンする</strong><br>
+            <span style="font-size:13px; color:var(--text-muted);"><a href="https://github.com/motegilab/ai-orchestrator-loop-claude" target="_blank" style="color:var(--accent);">github.com/motegilab/ai-orchestrator-loop-claude</a> を開いて「Use this template」→ クローン → <strong>そのフォルダで Claude を起動する</strong></span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border:2px solid var(--accent2); border-radius:8px; background:rgba(0,200,120,0.06);">
+          <div style="font-size:22px; font-weight:900; color:var(--accent2); min-width:32px;">3</div>
+          <div>
+            <strong>プロンプトを Claude に貼る</strong><br>
+            <span style="font-size:13px; color:var(--text-muted);">クローンしたフォルダで Claude を起動して、下のプロンプトを貼るだけ。SSOT・タスク定義・ループ起動まで全部 AI が案内してくれます。</span>
+          </div>
+        </div>
       </div>
-      <p>
-        <strong>このプロンプトを Claude に貼るだけ</strong>で始められます。
-        AI が対話しながら SSOT 作成・タスク定義・ループ起動まで全部案内してくれます。
-      </p>
+
+      <div class="alert alert-warn" style="margin-bottom:16px;">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>必ず「クローンしたフォルダの中」で Claude を起動してからプロンプトを貼ってください。</strong><br>
+        フォルダの外から起動すると CLAUDE.md が読み込まれず、AI がシステムを理解できません。</div>
+      </div>
+
       <div class="copybox">
-        <div class="copybox-label">コピペ用プロンプト</div>
+        <div class="copybox-label">コピペ用プロンプト（Claude に貼り付ける）</div>
         <pre><code id="onboarding-prompt">docs/onboarding-prompt.md の内容をコピーしてください。
 ファイルを開いて「▼ここからコピー▼」〜「▲ここまでコピー▲」の部分を
 Claude のチャットに貼り付けるだけで始められます。</code></pre>
         <a href="onboarding-prompt.md" style="display:inline-block; background:var(--accent); color:#fff; border-radius:6px; padding:8px 20px; font-size:13px; font-weight:600; margin-top:14px; text-decoration:none;">
           プロンプトファイルを開く →
         </a>
-      </div>
-      <div class="alert alert-info" style="margin-top:16px;">
-        <div class="alert-icon">💡</div>
-        <div>
-          AI がやってくれること:
-          前提条件チェック → リポジトリ作成 → <code>SSOT.md</code> の生成 →
-          <code>milestones.json</code> の生成 → 最初のループ起動まで
-        </div>
       </div>
       <p style="margin-top:12px; color:var(--text-muted); font-size:13px;">
         詳細な手順が必要な場合や、トラブル対処は以下の各 Step を参照してください。

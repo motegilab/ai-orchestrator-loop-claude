@@ -37,28 +37,43 @@ make loop-run
 
 ### セットアップの全工程（あなたが案内する手順）
 
-#### 前提条件チェック（Step 0）
-以下が揃っているか最初に確認する:
+#### リポジトリ作成 & クローン（Step 0）★最初にやること★
+**このシステムは「クローンしたフォルダの中でClaudeを起動する」ことで動く。**
+まず以下を確認・案内する:
+
+1. **テンプレートから自分のリポジトリを作成する**
+   - GitHub の [motegilab/ai-orchestrator-loop-claude](https://github.com/motegilab/ai-orchestrator-loop-claude) にアクセス
+   - 「Use this template」→「Create a new repository」をクリック
+   - リポジトリ名とプライバシー設定を決めて作成
+2. **クローンして開く**
+   ```bash
+   git clone https://github.com/YOUR_ORG/YOUR_REPO.git
+   cd YOUR_REPO
+   ```
+   または gh CLI:
+   ```bash
+   gh repo create my-project \
+     --template motegilab/ai-orchestrator-loop-claude \
+     --private --clone
+   cd my-project
+   ```
+3. **そのフォルダでエディタを開き、Claude をフォルダ内から起動する**
+   - VSCode/Cursor の拡張機能経由、または外部ターミナルで `claude` コマンドを実行
+   - **このフォルダの中から Claude を起動することが重要**（CLAUDE.md を自動で読み込むため）
+
+ユーザーがすでにクローン済みでフォルダ内から起動している場合はこのステップをスキップして次へ。
+
+#### 前提条件チェック（Step 1）
+以下が揃っているか確認する:
 - Python 3.9 以上（`python --version`）
 - Claude Code CLI v2.0 以上（`claude --version`）
 - Git（`git --version`）
 - make（`make --version`、Windows は Git Bash 付属か `choco install make`）
 
 揃っていないものがあれば、インストール方法を案内する。
-
-#### リポジトリ作成（Step 1）
-GitHub のテンプレートリポジトリから新規リポジトリを作成してクローンする:
+すべて確認できたら一括確認コマンドを案内する:
 ```bash
-# GitHub UI: "Use this template" ボタンでリポジトリ作成後
-git clone https://github.com/YOUR_ORG/YOUR_REPO.git
-cd YOUR_REPO
-```
-または gh CLI:
-```bash
-gh repo create my-project \
-  --template motegilab/ai-orchestrator-loop-claude \
-  --private --clone
-cd my-project
+python --version && claude --version && git --version && make --version
 ```
 
 #### 自動セットアップ（Step 2）
@@ -174,7 +189,11 @@ SSOT チェックをやりますか? [Y/n]: y
 
 では始めましょう。まず教えてください:
 
-**Q1. 前提条件の確認から始めますか？それとも、すでに Python / Claude Code CLI / Git は入っていますか？**
+**Q1. テンプレートリポジトリはもう手元にありますか？**
+
+- **A) まだ**: GitHub でテンプレートからリポジトリを作成→クローンの手順を案内します
+- **B) ある（今このフォルダで Claude を起動している）**: 前提条件の確認に進みます
+- **C) わからない**: 今いるフォルダのパスを教えてください
 
 ---
 
@@ -187,4 +206,4 @@ SSOT チェックをやりますか? [Y/n]: y
 - 場所: `docs/onboarding-prompt.md`
 - 用途: 初めてこのテンプレートを使うユーザー向けの導入プロンプト
 - AI の役割: セットアップガイド（前提条件確認 → SSOT生成 → milestones生成 → ループ起動まで）
-- 関連ファイル: `docs/setup-guide.html`（HTML 手順書）, `docs/INITIAL_SETUP_GUIDE.md`（Markdown 手順書）
+- 関連ファイル: `docs/setup-guide.html`（HTML 手順書）
