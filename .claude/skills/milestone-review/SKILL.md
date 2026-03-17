@@ -92,3 +92,17 @@ metadata:
 | milestone_id がわからない | latest.json に `milestone_completed` がない | milestones.json の全done Mを探す |
 | SSOT に GOチェックリストがない | プロジェクト固有設定未済み | §1 絶対ルールからチェック項目を抽出する |
 | チェック項目が汎用的すぎる | コンテキスト読み込み不足 | REPORT ファイルを追加で読んで実装内容を把握する |
+## Self-improvement
+
+このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:
+
+```
+ファイル: runtime/proposals/SKILL_PROPOSAL_milestone-review.md
+内容:
+- **問題**: 何が上手くいかなかったか（具体的に）
+- **提案**: どう変えるべきか
+- **根拠**: 何回失敗したか、どんなケースか
+```
+
+次のセッション開始時に自動で通知されます。SKILL.md の変更は人間が判断します。
+

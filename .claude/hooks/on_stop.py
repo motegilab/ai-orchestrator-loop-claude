@@ -29,6 +29,7 @@ MILESTONES    = REPO_ROOT / "tasks" / "milestones.json"
 LATEST_RUN    = RUNS_DIR / "latest.json"
 LATEST_REPORT = REPORTS_DIR / "REPORT_LATEST.md"
 NEXT_SESSION  = LOGS_DIR / "next_session.md"
+PROPOSALS_DIR = RUNTIME / "proposals"
 
 # Claudeが report Skill を実行せずに終了したと判定するマーカー
 PLACEHOLDER_MARKERS = [
@@ -186,6 +187,13 @@ make loop-status
     return source
 
 
+def get_pending_proposals():
+    """runtime/proposals/ にある提案ファイルを返す（古い順）"""
+    if not PROPOSALS_DIR.exists():
+        return []
+    return sorted(PROPOSALS_DIR.glob("*.md"), key=lambda p: p.stat().st_mtime)
+
+
 def generate_next_session(run_id, ts, report_source, next_task, audit_entries, completed_milestone=None):
     """
     next_session.md を生成する。これがループの燃料。
@@ -303,6 +311,19 @@ make loop-status
 - SSOT.md と policy/ssot_integrity.json は絶対に編集しない
 - runtime/ 以外にランタイム生成物を置かない
 """
+
+    # 改善提案があれば冒頭に追記
+    proposals = get_pending_proposals()
+    if proposals:
+        proposal_lines = ["## ⚡ 改善提案あり（最優先で確認してください）\n"]
+        for p in proposals:
+            proposal_lines.append(f"- `{p.name}` → Read で内容を確認し、適用するか判断してください")
+        proposal_lines.append(
+            "\n適用する場合: 該当の SKILL.md または SSOT.md を更新 → `make setup` → proposal ファイルを削除\n"
+            "却下する場合: proposal ファイルを削除するだけでOK\n"
+        )
+        content = "\n".join(proposal_lines) + "\n---\n" + content
+
     try:
         NEXT_SESSION.write_text(content, encoding="utf-8")
     except Exception as e:
@@ -387,7 +408,7 @@ def main():
         sys.exit(0)
 
     # ディレクトリ確保
-    for d in [RUNS_DIR, REPORTS_DIR, LOGS_DIR, ARTIFACTS]:
+    for d in [RUNS_DIR, REPORTS_DIR, LOGS_DIR, ARTIFACTS, PROPOSALS_DIR]:
         d.mkdir(parents=True, exist_ok=True)
 
     run_id = get_run_id()

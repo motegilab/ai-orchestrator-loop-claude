@@ -42,3 +42,17 @@ metadata:
 | on_stop.py がレポートを上書きした | PLACEHOLDER_MARKERS が残っていた | `()` 内を実際の内容で埋め直す |
 | Write ツールが拒否された | runtime/ 外のパスを指定した | パスを `runtime/reports/REPORT_LATEST.md` に修正する |
 | `decision` が `auto_generated` になった | report Skill を実行しなかった | 次ループ開始前に必ず report Skill を実行する |
+## Self-improvement
+
+このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:
+
+```
+ファイル: runtime/proposals/SKILL_PROPOSAL_report.md
+内容:
+- **問題**: 何が上手くいかなかったか（具体的に）
+- **提案**: どう変えるべきか
+- **根拠**: 何回失敗したか、どんなケースか
+```
+
+次のセッション開始時に自動で通知されます。SKILL.md の変更は人間が判断します。
+

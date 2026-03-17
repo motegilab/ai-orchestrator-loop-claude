@@ -37,3 +37,17 @@ python .claude/hooks/ssot_gate.py --update-hash
 | コマンドが存在しない | 環境差異 | `python tools/scripts/loop_status.py` を代替として使う |
 | タイムアウト | 処理が長い | failed として記録。成功扱いにしない（§1絶対ルール） |
 | `tail`/`head` が使えない（Windows） | コマンド未対応 | Bash ツールの出力をそのまま記録する |
+## Self-improvement
+
+このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:
+
+```
+ファイル: runtime/proposals/SKILL_PROPOSAL_verify.md
+内容:
+- **問題**: 何が上手くいかなかったか（具体的に）
+- **提案**: どう変えるべきか
+- **根拠**: 何回失敗したか、どんなケースか
+```
+
+次のセッション開始時に自動で通知されます。SKILL.md の変更は人間が判断します。
+
