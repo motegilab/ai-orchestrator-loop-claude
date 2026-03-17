@@ -400,9 +400,9 @@
   <nav>
     <div class="section-label">はじめに</div>
     <ul>
-      <li><a href="#quickstart" style="color:var(--accent2); font-weight:700;">🚀 初心者向けクイックスタート</a></li>
+      <li><a href="#step0" style="color:var(--warn); font-weight:700;">Step 0: 環境準備（まずここから）</a></li>
+      <li><a href="#quickstart" style="color:var(--accent2); font-weight:700;">🚀 クイックスタート</a></li>
       <li><a href="#overview">概要</a></li>
-      <li><a href="#prereq">前提条件</a></li>
     </ul>
     <div class="section-label">セットアップ</div>
     <ul>
@@ -432,11 +432,128 @@
   <!-- ── メイン ── -->
   <main>
 
+    <!-- Step 0 -->
+    <section id="step0" style="border-color: var(--warn); background: linear-gradient(135deg, #2a1f0a 0%, #1a1d27 100%);">
+      <h2><span class="step-badge" style="background:var(--warn); color:#000;">0</span>環境を準備する — まずここから</h2>
+      <p>Claude Code が動く環境を作ります。すでに揃っている場合は <a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> へ進んでください。</p>
+
+      <!-- エディタ選択タブ -->
+      <div style="display:flex; gap:8px; margin:20px 0 0;">
+        <button id="tab-vscode-btn" onclick="switchEditor('vscode')"
+          style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--accent); border-bottom:none; background:var(--accent); color:#fff; font-weight:700; cursor:pointer; font-size:13px;">
+          VSCode（推奨）
+        </button>
+        <button id="tab-cursor-btn" onclick="switchEditor('cursor')"
+          style="padding:8px 20px; border-radius:6px 6px 0 0; border:2px solid var(--border); border-bottom:none; background:var(--surface2); color:var(--text-muted); font-weight:700; cursor:pointer; font-size:13px;">
+          Cursor
+        </button>
+      </div>
+
+      <!-- VSCode タブ -->
+      <div id="tab-vscode" style="border:2px solid var(--accent); border-radius:0 8px 8px 8px; padding:20px 24px;">
+        <ol style="line-height:2.4;">
+          <li>
+            <strong>VSCode をインストール</strong><br>
+            <a href="https://code.visualstudio.com/" target="_blank" style="color:var(--accent);">code.visualstudio.com</a> からダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Node.js をインストール</strong>（Claude Code の動作に必要）<br>
+            <a href="https://nodejs.org/" target="_blank" style="color:var(--accent);">nodejs.org</a> の LTS 版をダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Git をインストール</strong>（未インストールの場合）<br>
+            <a href="https://git-scm.com/" target="_blank" style="color:var(--accent);">git-scm.com</a> からダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Claude Code CLI をインストール</strong><br>
+            PowerShell を開いて実行：
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="install-claude-vscode">npm install -g @anthropic-ai/claude-code</code></pre><button class="copy-code-btn" onclick="copyCode('install-claude-vscode',this)">コピー</button></div>
+          </li>
+          <li>
+            <strong>Claude にログイン</strong><br>
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="login-claude-vscode">claude login</code></pre><button class="copy-code-btn" onclick="copyCode('login-claude-vscode',this)">コピー</button></div>
+            ブラウザが開くので Anthropic アカウントでログインしてください。
+          </li>
+          <li>
+            <strong>プロジェクトを置くフォルダを決める</strong><br>
+            例: <code>C:\Users\あなたの名前\projects\</code><br>
+            <span style="font-size:13px; color:var(--text-muted);">エクスプローラーで作成するか、PowerShell で <code>mkdir C:\Users\あなたの名前\projects</code></span>
+          </li>
+          <li>
+            <strong>VSCode でそのフォルダを開く</strong><br>
+            VSCode → ファイル → フォルダーを開く → 上のフォルダを選択
+          </li>
+          <li>
+            <strong>外部 PowerShell を開いて claude と打つ</strong><br>
+            <div class="alert alert-warn" style="margin:8px 0; padding:10px 14px;">
+              <div class="alert-icon">⚠️</div>
+              <div>VSCode の統合ターミナルではなく、<strong>スタートメニューから PowerShell を別途起動</strong>してください。<br>
+              Stop Hook が VSCode 内ターミナルでは動かない場合があります。</div>
+            </div>
+            PowerShell で以下を実行：
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="start-claude-vscode">cd "C:\Users\あなたの名前\projects"
+claude</code></pre><button class="copy-code-btn" onclick="copyCode('start-claude-vscode',this)">コピー</button></div>
+            Claude が起動したら、<a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> のプロンプトを貼り付けてください。
+          </li>
+        </ol>
+      </div>
+
+      <!-- Cursor タブ -->
+      <div id="tab-cursor" style="border:2px solid var(--border); border-radius:0 8px 8px 8px; padding:20px 24px; display:none;">
+        <ol style="line-height:2.4;">
+          <li>
+            <strong>Cursor をインストール</strong><br>
+            <a href="https://cursor.sh/" target="_blank" style="color:var(--accent);">cursor.sh</a> からダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Node.js をインストール</strong>（Claude Code の動作に必要）<br>
+            <a href="https://nodejs.org/" target="_blank" style="color:var(--accent);">nodejs.org</a> の LTS 版をダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Git をインストール</strong>（未インストールの場合）<br>
+            <a href="https://git-scm.com/" target="_blank" style="color:var(--accent);">git-scm.com</a> からダウンロードしてインストール
+          </li>
+          <li>
+            <strong>Claude Code CLI をインストール</strong><br>
+            PowerShell を開いて実行：
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="install-claude-cursor">npm install -g @anthropic-ai/claude-code</code></pre><button class="copy-code-btn" onclick="copyCode('install-claude-cursor',this)">コピー</button></div>
+          </li>
+          <li>
+            <strong>Claude にログイン</strong><br>
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="login-claude-cursor">claude login</code></pre><button class="copy-code-btn" onclick="copyCode('login-claude-cursor',this)">コピー</button></div>
+          </li>
+          <li>
+            <strong>プロジェクトを置くフォルダを決める</strong><br>
+            例: <code>C:\Users\あなたの名前\projects\</code>
+          </li>
+          <li>
+            <strong>Cursor でそのフォルダを開く</strong><br>
+            Cursor → File → Open Folder → 上のフォルダを選択
+          </li>
+          <li>
+            <strong>外部 PowerShell を開いて claude と打つ</strong><br>
+            <div class="alert alert-warn" style="margin:8px 0; padding:10px 14px;">
+              <div class="alert-icon">⚠️</div>
+              <div><strong>Cursor 内蔵ターミナルでも動く場合がありますが、Stop Hook の確実な動作のため外部 PowerShell を推奨します。</strong><br>
+              スタートメニューから PowerShell を別途起動してください。</div>
+            </div>
+            <div class="code-wrap" style="margin:6px 0;"><pre><code id="start-claude-cursor">cd "C:\Users\あなたの名前\projects"
+claude</code></pre><button class="copy-code-btn" onclick="copyCode('start-claude-cursor',this)">コピー</button></div>
+            Claude が起動したら、<a href="#quickstart" style="color:var(--accent2);">クイックスタート</a> のプロンプトを貼り付けてください。
+          </li>
+        </ol>
+      </div>
+    </section>
+
     <!-- 🚀 初心者向けクイックスタート -->
     <section id="quickstart" style="border-color: var(--accent); background: linear-gradient(135deg, #1a1d35 0%, #1a1d27 100%);">
       <h2><span class="step-badge">🚀</span>初めての方へ — これだけでOK</h2>
+      <div class="alert alert-info" style="margin-bottom:16px;">
+        <div class="alert-icon">💡</div>
+        <div>Claude Code がまだ入っていない場合は <a href="#step0" style="color:var(--warn); font-weight:700;">Step 0</a> を先に完了してください。</div>
+      </div>
       <p>
-        セットアップの詳細を読む前に、<strong>このプロンプトを Claude に貼るだけ</strong>で始められます。
+        <strong>このプロンプトを Claude に貼るだけ</strong>で始められます。
         AI が対話しながら SSOT 作成・タスク定義・ループ起動まで全部案内してくれます。
       </p>
       <div class="copybox">
@@ -489,22 +606,6 @@ Claude のチャットに貼り付けるだけで始められます。</code></p
       </div>
     </section>
 
-    <!-- 前提条件 -->
-    <section id="prereq">
-      <h2><span class="step-badge">0</span>前提条件</h2>
-      <table>
-        <tr><th>ツール</th><th>必要バージョン</th><th>確認コマンド</th></tr>
-        <tr><td><code>Python</code></td><td>3.9 以上</td><td><code>python --version</code></td></tr>
-        <tr><td><code>Claude Code CLI</code></td><td>v2.0 以上</td><td><code>claude --version</code></td></tr>
-        <tr><td><code>Git</code></td><td>任意</td><td><code>git --version</code></td></tr>
-        <tr><td><code>make</code></td><td>任意</td><td><code>make --version</code></td></tr>
-      </table>
-      <div class="alert alert-warn">
-        <div class="alert-icon">⚠️</div>
-        <div>Windows では <code>make</code> が標準では入っていません。Git Bash に付属のものか、
-        <code>choco install make</code> でインストールしてください。</div>
-      </div>
-    </section>
 
     <!-- Step 1 -->
     <section id="step1">
@@ -1487,6 +1588,34 @@ function updateSyncCmds() {
 
 if (syncProjInput) { syncProjInput.addEventListener('input', updateSyncCmds); }
 updateSyncCmds();
+
+// ── Step 0 エディタタブ切り替え ───────────────────────────────
+function switchEditor(editor) {
+  const vscodeTab  = document.getElementById('tab-vscode');
+  const cursorTab  = document.getElementById('tab-cursor');
+  const vscodeBtn  = document.getElementById('tab-vscode-btn');
+  const cursorBtn  = document.getElementById('tab-cursor-btn');
+  if (!vscodeTab) return;
+  if (editor === 'vscode') {
+    vscodeTab.style.display = 'block';
+    cursorTab.style.display = 'none';
+    vscodeBtn.style.background = 'var(--accent)';
+    vscodeBtn.style.color = '#fff';
+    vscodeBtn.style.borderColor = 'var(--accent)';
+    cursorBtn.style.background = 'var(--surface2)';
+    cursorBtn.style.color = 'var(--text-muted)';
+    cursorBtn.style.borderColor = 'var(--border)';
+  } else {
+    vscodeTab.style.display = 'none';
+    cursorTab.style.display = 'block';
+    cursorBtn.style.background = 'var(--accent)';
+    cursorBtn.style.color = '#fff';
+    cursorBtn.style.borderColor = 'var(--accent)';
+    vscodeBtn.style.background = 'var(--surface2)';
+    vscodeBtn.style.color = 'var(--text-muted)';
+    vscodeBtn.style.borderColor = 'var(--border)';
+  }
+}
 
 // ── コピーボタン ──────────────────────────────────────────────
 function copyCode(elemId, btn) {
