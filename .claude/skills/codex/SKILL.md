@@ -65,8 +65,10 @@ codex Skill は現在無効です。
 
 ## Step 2: Codex 実行
 
+Windows 環境では Git bash から直接 `codex` を呼べないため、PowerShell 経由で実行する。
+
 ```bash
-codex exec --full-auto --sandbox read-only --cd <対象ディレクトリ> "<依頼内容>。確認や質問は不要です。具体的な提案・修正案・コード例まで自主的に出力してください。"
+powershell -Command "codex exec --full-auto --sandbox read-only --cd '<対象ディレクトリ>' '<依頼内容>。確認や質問は不要です。具体的な提案・修正案・コード例まで自主的に出力してください。'"
 ```
 
 **パラメータ**:
@@ -74,9 +76,11 @@ codex exec --full-auto --sandbox read-only --cd <対象ディレクトリ> "<依
 |---|---|
 | `--full-auto` | 完全自動モード |
 | `--sandbox read-only` | 読み取り専用（ファイル書き換え禁止） |
-| `--cd <dir>` | 対象プロジェクトのディレクトリ |
+| `--cd <dir>` | 対象プロジェクトのディレクトリ（Windowsパス可） |
 
 **プロンプト末尾に必ず追加**: `「確認や質問は不要です。具体的な提案まで自主的に出力してください。」`
+
+**注意**: ディレクトリパスに日本語・スペースが含まれる場合はシングルクォートで囲む。
 
 ---
 
