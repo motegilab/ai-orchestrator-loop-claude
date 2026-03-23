@@ -40,6 +40,12 @@ type: index
 | [[milestone-review]] | マイルストーン完了時のHTMLチェックリスト生成 | milestone_completed 検出時 |
 | [[ssot-review]] | SSOT をメインプログラマー視点でレビュー＋テストケース生成 | SSOT作成後、"レビュー" "実装前チェック" |
 
+## オプション Skill（デフォルト無効・要セットアップ）
+
+| Skill | 役割 | 有効化 | 必要なもの |
+|---|---|---|---|
+| [[codex]] | Codex CLI によるセカンドオピニオン | `make codex-enable` | Codex CLI + OPENAI_API_KEY |
+
 ---
 
 ## Skill 詳細
@@ -70,6 +76,13 @@ type: index
 - **入力**: git status, policy/, SSOT.md
 - **出力**: REPORT_LATEST.md の release_check_results
 - **チェック**: Safety / Required Files / Template Neutrality / Integrity / Smoke Test
+
+### [[codex]] ⚙️ オプション（デフォルト無効）
+- **入力**: 対象ディレクトリ, 依頼内容
+- **出力**: Codex CLI の分析結果（コードレビュー / 設計提案 / バグ修正案）
+- **有効化**: `make codex-enable`（Codex CLI + OPENAI_API_KEY が必要）
+- **無効化**: `make codex-disable`
+- **連携**: [[ssot-review]] と組み合わせてSSOTの二重レビューに使う
 
 ### [[milestone-review]]
 - **入力**: milestones.json, SSOT.md, REPORT_LATEST.md, latest.json

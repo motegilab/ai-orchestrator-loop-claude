@@ -1,0 +1,13 @@
+{
+  "_comment": "オプションSkillの有効/無効を管理。make <skill>-enable / make <skill>-disable で切り替える。",
+  "skills": {
+    "codex": {
+      "enabled": false,
+      "requires": [
+        "Codex CLI: npm install -g @openai/codex",
+        "OPENAI_API_KEY 環境変数"
+      ],
+      "description": "OpenAI Codex CLI によるセカンドオピニオン"
+    }
+  }
+}

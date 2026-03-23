@@ -50,6 +50,14 @@ ssot-lock:
 ssot-fix:
 	python .claude/hooks/ssot_gate.py --update-hash
 
+## オプションSkill: codex を有効化（Codex CLI + OPENAI_API_KEY が必要）
+codex-enable:
+	python -c "import json,pathlib; f=pathlib.Path('policy/optional_skills.json'); d=json.loads(f.read_text(encoding='utf-8')); d['skills']['codex']['enabled']=True; f.write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8'); print('✅ codex Skill: 有効化しました')"
+
+## オプションSkill: codex を無効化
+codex-disable:
+	python -c "import json,pathlib; f=pathlib.Path('policy/optional_skills.json'); d=json.loads(f.read_text(encoding='utf-8')); d['skills']['codex']['enabled']=False; f.write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8'); print('🔒 codex Skill: 無効化しました')"
+
 ## 初回セットアップ（ツール確認 + runtime/ 作成 + SSOT hash 更新）
 setup:
 	python tools/scripts/setup.py
