@@ -92,6 +92,13 @@ metadata:
 | milestone_id がわからない | latest.json に `milestone_completed` がない | milestones.json の全done Mを探す |
 | SSOT に GOチェックリストがない | プロジェクト固有設定未済み | §1 絶対ルールからチェック項目を抽出する |
 | チェック項目が汎用的すぎる | コンテキスト読み込み不足 | REPORT ファイルを追加で読んで実装内容を把握する |
+
+## 関連
+
+- 使用タイミング: [[verify]] で全タスク PASS 後
+- 出力先: `runtime/reports/MANUAL_CHECK_{milestone_id}.html`
+- → [[INDEX]] — 全 Skill の一覧
+
 ## Self-improvement
 
 このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:

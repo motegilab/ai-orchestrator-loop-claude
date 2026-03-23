@@ -43,6 +43,12 @@ metadata:
 | runtime/ が存在しない | 初回起動。`make setup` を実行して環境を初期化する |
 | latest.json が壊れている | `runtime/runs/` 内の最新ファイルを Read ツールで直接読む |
 | milestones.json が見つからない | `tasks/milestones.json` を Glob で検索する |
+
+## 関連
+
+- → [[patch]] — 仮説が固まったら次にこれを使う
+- → [[INDEX]] — 全 Skill の一覧
+
 ## Self-improvement
 
 このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:

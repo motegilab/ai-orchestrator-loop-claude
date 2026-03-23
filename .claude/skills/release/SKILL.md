@@ -67,6 +67,13 @@ Expected: exit 0 for each.
 | Syntax error in Hook | Bug in hook script | Fix the hook script before release |
 | CLAUDE.md > 200 lines | Too verbose | Move details to `docs/` and link |
 | milestones.json has project tasks | Not reset to template | Replace with template placeholder content |
+
+## 関連
+
+- → [[report]] — チェック結果を REPORT_LATEST.md に書く
+- 使用前: [[verify]] でスモークテストを実行しておく
+- → [[INDEX]] — 全 Skill の一覧
+
 ## Self-improvement
 
 このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:

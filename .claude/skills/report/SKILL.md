@@ -42,6 +42,13 @@ metadata:
 | on_stop.py がレポートを上書きした | PLACEHOLDER_MARKERS が残っていた | `()` 内を実際の内容で埋め直す |
 | Write ツールが拒否された | runtime/ 外のパスを指定した | パスを `runtime/reports/REPORT_LATEST.md` に修正する |
 | `decision` が `auto_generated` になった | report Skill を実行しなかった | 次ループ開始前に必ず report Skill を実行する |
+
+## 関連
+
+- ← [[verify]] — exit_codes と stdout_tail はここから受け取る
+- ← [[observe]] / [[patch]] — 変更ファイル一覧はここから
+- → [[INDEX]] — 全 Skill の一覧
+
 ## Self-improvement
 
 このSkillが期待通り動かない・改善できそうな場合は自動的に修正を試みず、代わりに提案ファイルを書いてください:

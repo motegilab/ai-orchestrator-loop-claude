@@ -4,7 +4,7 @@
 #
 # 入口: loop-start / loop-stop / loop-status / setup
 
-.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check test help
+.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check diagnose test help
 
 ## ループ開始（同じウィンドウ — Hook の stdin/stdout が正しく動く）
 loop-start:
@@ -26,6 +26,10 @@ loop-status:
 loop-stop:
 	python -c "print('[loop-stop] Claude Code セッション内で Ctrl+C または /stop を入力してください。'); print('Stop Hook (on_stop.py) が自動でレポートを生成します。')"
 
+## プロジェクト自己診断（Hooks整合性・Skill YAML・未対応Proposal・未使用Skill・停滞タスク・Upstream差分）
+diagnose:
+	python tools/scripts/diagnose.py
+
 ## インフラ単体テスト（ssot_check / on_stop / loop_run のロジック検証）
 test:
 	python -m pytest tests/infra/ -v
@@ -40,4 +44,4 @@ setup:
 
 ## ヘルプ
 help:
-	python -c "print('make loop-start         ループ開始 (同ウィンドウ)'); print('make loop-start-detach  ループ開始 (新規ウィンドウ, Windows)'); print('make loop-run           自動連続ループ (pending タスクがなくなるまで)'); print('make loop-run N=3       最大3ループ実行'); print('make loop-status        前回ループの状態を表示'); print('make loop-stop          停止案内を表示'); print('make ssot-check         SSOT 品質チェック'); print('make test               インフラ単体テスト実行'); print('make setup              初回セットアップ')"
+	python -c "print('make loop-start         ループ開始 (同ウィンドウ)'); print('make loop-start-detach  ループ開始 (新規ウィンドウ, Windows)'); print('make loop-run           自動連続ループ (pending タスクがなくなるまで)'); print('make loop-run N=3       最大3ループ実行'); print('make loop-status        前回ループの状態を表示'); print('make loop-stop          停止案内を表示'); print('make ssot-check         SSOT 品質チェック'); print('make diagnose           プロジェクト自己診断'); print('make test               インフラ単体テスト実行'); print('make setup              初回セットアップ')"
