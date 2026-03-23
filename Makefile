@@ -4,7 +4,7 @@
 #
 # 入口: loop-start / loop-stop / loop-status / setup
 
-.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check diagnose test help
+.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check ssot-unlock ssot-lock diagnose test help
 
 ## ループ開始（同じウィンドウ — Hook の stdin/stdout が正しく動く）
 loop-start:
@@ -37,6 +37,14 @@ test:
 ## SSOT 品質チェック（loop-run の前に自動実行される）
 ssot-check:
 	python tools/scripts/ssot_check.py
+
+## SSOT-GATE を一時解除（Claude が SSOT.md を直接編集できるようになる）
+ssot-unlock:
+	python .claude/hooks/ssot_gate.py --disable
+
+## SSOT-GATE を再有効化 + ハッシュ更新（ssot-unlock の後に必ず実行）
+ssot-lock:
+	python .claude/hooks/ssot_gate.py --enable
 
 ## 初回セットアップ（ツール確認 + runtime/ 作成 + SSOT hash 更新）
 setup:

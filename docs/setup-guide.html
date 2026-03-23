@@ -584,6 +584,21 @@ claude</code></pre>
         </div>
       </div>
 
+      <!-- SSOT-GATE 警告 -->
+      <div style="border-left:4px solid var(--danger); padding-left:20px; margin-bottom:32px; background:rgba(220,50,50,0.07); border-radius:0 8px 8px 0; padding:16px 20px;">
+        <h3 style="margin:0 0 10px; color:var(--danger);">🔒 ⑦ の前に必ず実行：SSOT-GATE ハッシュ更新</h3>
+        <p style="margin:0 0 10px;">テンプレートからクローンした直後は、Claude Code を起動すると <strong>「SSOT-GATE: BLOCKED」</strong> エラーが出てファーストプロンプトがブロックされます。<br>
+        起動前に以下を実行してください：</p>
+        <pre><code><span class="comment"># ① ゲートを一時解除（Claude が SSOT.md を直接編集できるようになる）</span>
+make ssot-unlock
+
+<span class="comment"># ② ⑦ のファーストプロンプトを Claude に貼り付けて SSOT.md を生成させる</span>
+
+<span class="comment"># ③ 生成完了後、ゲートを再有効化（ハッシュも自動更新）</span>
+make ssot-lock</code></pre>
+        <p style="font-size:12px; color:var(--text-muted); margin:8px 0 0;">⚠️ <code>ssot-unlock</code> 中は SSOT.md の保護が外れます。<code>ssot-lock</code> を忘れずに実行してください。</p>
+      </div>
+
       <!-- ⑦ ファーストプロンプトを貼る -->
       <div style="border-left:4px solid var(--accent2); padding-left:20px; margin-bottom:8px;">
         <h3 style="margin:0 0 12px; color:var(--accent2);">⑦ ファーストプロンプトを貼る</h3>
@@ -972,6 +987,16 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
         <div class="alert-icon">⚠️</div>
         <div>VSCode 統合ターミナルから <code>make loop-start</code> を実行すると、Claude Code のサブプロセスとして起動され Stop Hook が正常に発火しません。<strong>外部の PowerShell か Git Bash から実行してください。</strong></div>
       </div>
+
+      <h3>⚠️ 新規クローン直後に「SSOT-GATE: BLOCKED」が出る</h3>
+      <div class="alert alert-warn">
+        <div class="alert-icon">🔒</div>
+        <div><strong>テンプレートから新PJを作成した直後は必ずこのエラーが出ます。</strong><br>
+        テンプレートの <code>policy/ssot_integrity.json</code> に保存されているハッシュが、新PJの SSOT.md と一致しないために発生します。<br>
+        以下のコマンドを実行してハッシュを更新してください:</div>
+      </div>
+      <pre><code><span class="cmd">python</span> .claude/hooks/ssot_gate.py --update-hash</code></pre>
+      <p style="font-size:13px; color:var(--text-muted);">SSOT.md を新PJ用に書き換えた後も、このコマンドで再度ハッシュを更新してください。</p>
 
       <h3>SSOT.md を編集しようとしてブロックされた</h3>
       <p>正常な動作です。SSOT.md はループ中の自動編集が禁止されています。手動で編集した後 <code>make setup</code> を実行してください。</p>

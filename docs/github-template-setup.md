@@ -50,13 +50,35 @@ make loop-start
 
 ## Step 4: 新PJ初期化（テンプレート適用後）
 
-テンプレートを使って新PJを作成したら、`docs/ssot-creation-prompt.md` のプロンプトを使って
+### ⚠️ 必須：SSOT-GATE ハッシュの更新
+
+**クローン直後は必ずこれを実行する。** 実行しないと Claude Code の初期プロンプトがブロックされる。
+
+```bash
+python .claude/hooks/ssot_gate.py --update-hash
+```
+
+**なぜ必要か**: テンプレートの `policy/ssot_integrity.json` には元リポジトリの SSOT.md のハッシュが入っている。
+新PJの SSOT.md と不一致になるため、起動時に `SSOT-GATE: BLOCKED` エラーになる。
+SSOT.md を新PJ用に書き換えた後も、このコマンドで再度ハッシュを更新すること。
+
+---
+
+### SSOT.md の書き換え
+
+`docs/ssot-creation-prompt.md` のプロンプトを使って
 Claude に SSOT.md / CLAUDE.md を新PJ用に書き換えてもらう。
 
 ```bash
 # ループ起動後、以下のプロンプトを使う:
 # → docs/ssot-creation-prompt.md の「プロンプト本文」を参照
 make loop-start
+```
+
+SSOT.md 書き換え完了後、再度ハッシュを更新する:
+
+```bash
+python .claude/hooks/ssot_gate.py --update-hash
 ```
 
 ---

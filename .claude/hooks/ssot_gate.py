@@ -33,6 +33,9 @@ def check_ssot_integrity():
     return True, "ok"
 
 def check_tool_input(event):
+    integrity = load_integrity()
+    if not integrity.get("enabled", True):
+        return True, "disabled"  # ゲート無効中は書き込みを許可
     tool_name = event.get("tool_name", "")
     tool_input = event.get("tool_input", {})
     if tool_name in ("Write", "Edit", "MultiEdit"):
@@ -54,6 +57,22 @@ def update_hash():
     INTEGRITY_FILE.write_text(json.dumps(integrity, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"✅ Hash updated: SSOT.md = {integrity['files'][str(SSOT)][:16]}...")
 
+def set_enabled(enabled: bool):
+    POLICY_DIR.mkdir(parents=True, exist_ok=True)
+    integrity = load_integrity()
+    integrity["enabled"] = enabled
+    INTEGRITY_FILE.write_text(json.dumps(integrity, ensure_ascii=False, indent=2), encoding="utf-8")
+    if enabled:
+        # 再有効化時はハッシュも更新
+        if SSOT.exists():
+            integrity["files"][str(SSOT)] = sha256_file(SSOT)
+            INTEGRITY_FILE.write_text(json.dumps(integrity, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"🔒 SSOT-GATE: 有効化 + Hash updated: {integrity['files'][str(SSOT)][:16]}...")
+        else:
+            print("🔒 SSOT-GATE: 有効化（SSOT.md が見つからないためハッシュ更新なし）")
+    else:
+        print("🔓 SSOT-GATE: 一時無効化。SSOT.md の編集が可能になりました。\n   完了後: python .claude/hooks/ssot_gate.py --enable")
+
 def main():
     args = sys.argv[1:]
     mode = "tool"
@@ -61,6 +80,12 @@ def main():
         if arg == "--mode=prompt": mode = "prompt"
         elif arg == "--update-hash":
             update_hash()
+            sys.exit(0)
+        elif arg == "--disable":
+            set_enabled(False)
+            sys.exit(0)
+        elif arg == "--enable":
+            set_enabled(True)
             sys.exit(0)
 
     try:
