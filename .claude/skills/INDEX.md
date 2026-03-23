@@ -38,6 +38,7 @@ type: index
 |---|---|---|
 | [[release]] | OSS 公開前のリリース準備チェック | "release" "リリース" "公開チェック" |
 | [[milestone-review]] | マイルストーン完了時のHTMLチェックリスト生成 | milestone_completed 検出時 |
+| [[ssot-review]] | SSOT をメインプログラマー視点でレビュー＋テストケース生成 | SSOT作成後、"レビュー" "実装前チェック" |
 
 ---
 
@@ -74,6 +75,12 @@ type: index
 - **入力**: milestones.json, SSOT.md, REPORT_LATEST.md, latest.json
 - **出力**: runtime/reports/MANUAL_CHECK_{milestone_id}.html
 - **用途**: 人間がブラウザで開いてチェックする
+
+### [[ssot-review]]
+- **入力**: SSOT.md, milestones.json
+- **出力**: スコア表（/100） + 不足点リスト + マイルストーン別テストケース表
+- **チェック軸**: 情報資産の分類 / AI権限定義 / Decision Table / 学習承認フロー / テストケース
+- **次へ**: → [[patch]]（SSOT補足） or → SSOT.md 手動修正後 → [[ssot-review]] 再実行
 
 ---
 
