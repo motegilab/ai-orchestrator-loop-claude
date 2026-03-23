@@ -10,8 +10,8 @@ metadata:
   version: 1.0.0
   optional: true
   requires:
-    - "Codex CLI (npm install -g @openai/codex)"
-    - "OPENAI_API_KEY 環境変数"
+    - "Codex CLI: npm install -g @openai/codex"
+    - "認証: codex login（ChatGPT Plus/Pro）または OPENAI_API_KEY 環境変数"
 ---
 
 # Codex Skill — 別AIによるセカンドオピニオン

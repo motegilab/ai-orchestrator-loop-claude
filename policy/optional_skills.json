@@ -5,7 +5,7 @@
       "enabled": false,
       "requires": [
         "Codex CLI: npm install -g @openai/codex",
-        "OPENAI_API_KEY 環境変数"
+        "認証: codex login（ChatGPT Plus/Pro）または OPENAI_API_KEY 環境変数"
       ],
       "description": "OpenAI Codex CLI によるセカンドオピニオン"
     }
