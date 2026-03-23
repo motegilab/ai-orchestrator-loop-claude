@@ -38,6 +38,8 @@ make loop-start
 | `make loop-start` | ループ開始 |
 | `make loop-status` | 前回の状態を確認 |
 | `make loop-stop` | 停止 |
+| `make ssot-check` | SSOT 品質チェック |
+| `make diagnose` | プロジェクト自己診断（Hooks/Skill/停滞タスク確認） |
 | `make setup` | 初回セットアップ |
 
 ## フォルダ構成
