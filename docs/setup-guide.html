@@ -982,6 +982,11 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
     <section id="trouble">
       <h2><span class="step-badge" style="background:var(--danger)">!</span>トラブル対処</h2>
 
+      <h3>誤送信・強制停止後に「SSOT-GATE: BLOCKED」が出る</h3>
+      <p>チャットを誤送信して途中で止めたり、Ctrl+C で強制停止すると、ハッシュが不一致になることがあります。</p>
+      <pre><code>make ssot-fix</code></pre>
+      <p style="font-size:13px; color:var(--text-muted);">これだけで修復できます。SSOT.md の内容は変わりません。</p>
+
       <h3>Stop Hook が発火しない / runtime/runs/ にファイルが作られない</h3>
       <div class="alert alert-warn">
         <div class="alert-icon">⚠️</div>

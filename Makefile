@@ -46,6 +46,10 @@ ssot-unlock:
 ssot-lock:
 	python .claude/hooks/ssot_gate.py --enable
 
+## ハッシュ不一致エラーを修復（誤送信・強制停止後にエラーが出たら実行）
+ssot-fix:
+	python .claude/hooks/ssot_gate.py --update-hash
+
 ## 初回セットアップ（ツール確認 + runtime/ 作成 + SSOT hash 更新）
 setup:
 	python tools/scripts/setup.py
