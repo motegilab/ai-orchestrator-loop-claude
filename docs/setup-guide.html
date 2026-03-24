@@ -418,6 +418,7 @@
       <li><a href="#loop-flow">ループの流れ</a></li>
       <li><a href="#ssot-check">SSOT チェック</a></li>
       <li><a href="#checkpoint">チェックポイント</a></li>
+      <li><a href="#codex-skill">Codex（オプション）</a></li>
       <li><a href="#trouble">トラブル対処</a></li>
     </ul>
     <div class="section-label">応用</div>
@@ -900,6 +901,8 @@ SSOT チェックをやりますか? [Y/n]: <span class="cmd">y</span>
         <tr><td><code>make test</code></td><td>インフラ単体テスト（27 ケース）</td></tr>
         <tr><td><code>make setup</code></td><td>SSOT ハッシュ更新・runtime 初期化</td></tr>
         <tr><td><code>make help</code></td><td>コマンド一覧表示</td></tr>
+        <tr><td><code>make codex-enable</code></td><td>Codex セカンドオピニオン Skill を有効化（要セットアップ）</td></tr>
+        <tr><td><code>make codex-disable</code></td><td>Codex Skill を無効化</td></tr>
       </table>
 
       <h3>loop-run のオプション</h3>
@@ -976,6 +979,44 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
       <pre><code>[loop-run] チェックポイント: T5 — 統合テスト: 全コンポーネントが連携して...
 [loop-run] このタスクの前で停止します。確認後 make loop-run で再開してください。</code></pre>
       <p>確認後は <code>make loop-run</code> で再開するだけです。チェックポイントを通過したタスクは自動的に続行します。</p>
+    </section>
+
+    <!-- Codex セカンドオピニオン（オプション） -->
+    <section id="codex-skill" style="border-color: var(--accent); background: linear-gradient(135deg, #0a1a2a 0%, #1a1d27 100%);">
+      <h2><span class="step-badge" style="background:var(--accent); color:#000;">⚙</span>Codex セカンドオピニオン（オプション）</h2>
+      <p>OpenAI の Codex CLI を使って、Claude とは別のモデルによるコードレビュー・設計相談・バグ調査ができます。<br>
+      SSOT の抜け・設計上の盲点など、書いた本人には気づきにくい問題を発見するのに有効です。</p>
+      <div class="alert alert-warn" style="margin:16px 0;">
+        <div class="alert-icon">⚙️</div>
+        <div>このSkillはオプションです。<strong>Codex CLI のインストールと ChatGPT Plus/Pro アカウント（または OpenAI API Key）が必要</strong>です。</div>
+      </div>
+
+      <h3 style="margin-top:24px;">① Codex CLI をインストールする</h3>
+      <pre><code>npm install -g @openai/codex</code></pre>
+
+      <h3 style="margin-top:24px;">② ログインする（ChatGPT Plus/Pro アカウントで使う場合）</h3>
+      <pre><code>codex login</code></pre>
+      <p style="font-size:13px; color:var(--text-muted);">ブラウザが開くので ChatGPT にログインします。API Key を使う場合は <code>OPENAI_API_KEY</code> 環境変数を設定してください。</p>
+
+      <h3 style="margin-top:24px;">③ Skill を有効化する</h3>
+      <pre><code>make codex-enable</code></pre>
+
+      <h3 style="margin-top:24px;">④ Claude に依頼する</h3>
+      <p>Claude Code のチャットで以下のように話しかけるだけです:</p>
+      <pre><code>codexでこのPJの問題点を洗い出して
+codexにSSOTをレビューしてもらって
+codexと設計相談したい</code></pre>
+      <p>Claude が自動で Codex CLI を呼び出し、結果をチャットに返します。</p>
+
+      <h3 style="margin-top:24px;">使わないときは無効化する</h3>
+      <pre><code>make codex-disable</code></pre>
+
+      <div class="alert alert-warn" style="margin-top:16px;">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>Google Drive（G: ドライブ）上のプロジェクトは Codex が直接アクセスできません。</strong><br>
+        Codex の Windows サンドボックスが Google Drive の仮想ファイルシステムへの ACL 設定に失敗するためです。<br>
+        この場合は C: ドライブにクローンを置いて分析するか、Claude 単体のレビュー（<code>ssot-review</code> Skill）を使ってください。</div>
+      </div>
     </section>
 
     <!-- トラブル対処 -->

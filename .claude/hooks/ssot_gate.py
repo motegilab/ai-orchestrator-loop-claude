@@ -42,7 +42,7 @@ def check_tool_input(event):
         file_path = tool_input.get("file_path", tool_input.get("path", ""))
         for protected in PROTECTED_PATHS:
             if file_path == protected or file_path.startswith(protected):
-                return False, f"SSOT-GATE: BLOCKED\n  {file_path} への書き込みはSSO.md §1で禁止されています。"
+                return False, f"SSOT-GATE: BLOCKED\n  {file_path} への書き込みはSSOT.md §1で禁止されています。"
     return True, "ok"
 
 def update_hash():
@@ -99,7 +99,17 @@ def main():
         print(reason, file=sys.stderr)
         sys.exit(2)
 
-    if mode == "tool":
+    if mode == "prompt":
+        token_file = Path("runtime/logs/.session_token")
+        if not token_file.exists():
+            print(
+                "⚠️  SSOT-GATE: SessionStart が未実行です。\n"
+                "   ループ実行には make loop-start を使ってください。\n"
+                "   （このメッセージは手動セッションでは無視して構いません）",
+                file=sys.stderr
+            )
+            # 警告のみ — 手動セッションをブロックしない
+    elif mode == "tool":
         ok, reason = check_tool_input(event)
         if not ok:
             print(reason, file=sys.stderr)

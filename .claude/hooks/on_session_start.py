@@ -112,6 +112,19 @@ def main():
     except Exception as e:
         print(f"[session_start] WARNING: audit_log マーカー書き込み失敗: {e}", file=sys.stderr)
 
+    # ── セッショントークンを書き込む ──────────────────────────────────────
+    # UserPromptSubmit Hook が「SessionStart が正常に完了した」を確認するために使う
+    logs_dir = Path("runtime/logs")
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    session_token_file = logs_dir / ".session_token"
+    try:
+        session_token_file.write_text(
+            json.dumps({"timestamp": session_ts, "initialized": True}, ensure_ascii=False),
+            encoding="utf-8"
+        )
+    except Exception as e:
+        print(f"[session_start] WARNING: セッショントークン書き込み失敗: {e}", file=sys.stderr)
+
     # ── REPORT_LATEST.md をテンプレート状態にリセット ────────────────────
     # Claude が report Skill を使って書き直さない限り PLACEHOLDER_MARKERS が残る
     # → on_stop.py が「Claudeは書かなかった」と正しく判定できる

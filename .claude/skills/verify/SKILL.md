@@ -21,7 +21,6 @@ metadata:
 ## デフォルト検証コマンド（patch が未指定の場合）
 ```
 python tools/scripts/loop_status.py
-python .claude/hooks/ssot_gate.py --update-hash
 ```
 
 ## Outputs

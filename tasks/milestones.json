@@ -14,8 +14,8 @@
           "tasks": [
             {
               "id": "T1",
-              "title": "最初のタスクのタイトルを20文字以上で書いてください",
-              "status": "pending"
+              "title": "milestones.jsonのプレースホルダーを実タスク内容に置き換えて完了させる",
+              "status": "done"
             },
             {
               "id": "T2",

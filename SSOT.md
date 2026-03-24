@@ -15,7 +15,7 @@ NS_ID: NS_AI_ORCHESTRATOR_LOOP_CLAUDE_SSOT
 | Hook-Driven Loop | ループ制御はSessionStart/Stop/PreToolUse/PostToolUse Hookが担う |
 | 汎用性 | 任意のPJワークスペースで動く。テンプレートリポジトリとして機能する |
 | Files-as-Memory | 状態管理はファイル（JSON/MD）で完結 |
-| SSOT-First | 必ずSSO.md を読んでから実行。UserPromptSubmit Hookで強制される |
+| SSOT-First | 必ずSSOT.md を読んでから実行。UserPromptSubmit Hookで強制される |
 | 1原因1修正 | 1ループで修正するのは1原因に起因する1修正のみ |
 | 監査ログが真実 | runtime/runs/latest.json と REPORT_LATEST.md が唯一の真実 |
 | Human Tool哲学 | AIがワークフロー主導。人間は make loop-start を叩くだけ |
@@ -153,7 +153,7 @@ NS_ID: NS_AI_ORCHESTRATOR_LOOP_CLAUDE_SSOT
 [ ] Claude Code CLI v2.0以上インストール済み
 [ ] make loop-start でセッションが起動する
 [ ] SessionStart Hookが発火しadditionalContextが注入される
-[ ] PreToolUse HookがSSO.mdへの書き込みをブロックする
+[ ] PreToolUse HookがSSOT.mdへの書き込みをブロックする
 [ ] Stop Hook後にruntime/runs/latest.jsonが生成される
 [ ] Stop Hook後にruntime/reports/REPORT_LATEST.mdが生成される
 [ ] Stop Hook後にruntime/logs/next_session.mdが生成される

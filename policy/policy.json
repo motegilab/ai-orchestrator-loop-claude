@@ -1,23 +1,7 @@
 {
   "version": "1.0.0",
-  "scope": {
-    "allowed_read_prefixes": ["SSOT.md", "CLAUDE.md", "policy/", "tasks/", "docs/", ".claude/", "runtime/"],
-    "deny_write_paths": ["SSOT.md", "policy/ssot_integrity.json", ".git/"]
-  },
-  "loop_defaults": {
-    "enabled": true,
-    "max_auto_loops": 10,
-    "report_required": true
-  },
-  "decision_policy": {
-    "ask_no_action_overrides_all": true,
-    "one_cause_one_fix": true,
-    "ssot_check_required": true
-  },
+  "_comment": "実際に enforce されている設定のみ記載。未実装の宣言は削除済み。",
   "self_repair_loop": {
-    "enabled": true,
-    "max_iters": 3,
-    "must_report_each_iter": true,
     "report_fields_required": ["hypothesis_one_cause", "one_fix", "files_changed", "verify_commands", "exit_codes", "evidence_paths", "decision"]
   }
 }
