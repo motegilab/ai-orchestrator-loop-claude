@@ -417,6 +417,7 @@
       <li><a href="#commands">コマンド一覧</a></li>
       <li><a href="#loop-flow">ループの流れ</a></li>
       <li><a href="#ssot-check">SSOT チェック</a></li>
+      <li><a href="#ssot-edit">SSOT 更新手順</a></li>
       <li><a href="#checkpoint">チェックポイント</a></li>
       <li><a href="#codex-skill">Codex（オプション）</a></li>
       <li><a href="#trouble">トラブル対処</a></li>
@@ -897,6 +898,8 @@ SSOT チェックをやりますか? [Y/n]: <span class="cmd">y</span>
         <tr><td><code>make loop-run N=3</code></td><td>最大 3 ループ実行（プロンプトなし）</td></tr>
         <tr><td><code>make loop-status</code></td><td>前回ループの状態を表示</td></tr>
         <tr><td><code>make ssot-check</code></td><td>SSOT 品質チェック（ERROR/WARN/OK）</td></tr>
+        <tr><td><code>make ssot-edit-start</code></td><td>SSOT 編集モード開始（バックアップ自動取得 + ゲート解除）</td></tr>
+        <tr><td><code>make ssot-edit-end</code></td><td>SSOT 編集モード終了（ゲート再有効化 + ハッシュ更新）</td></tr>
         <tr><td><code>make diagnose</code></td><td>プロジェクト自己診断（Hooks整合性・未使用Skill・停滞タスク等）</td></tr>
         <tr><td><code>make test</code></td><td>インフラ単体テスト（27 ケース）</td></tr>
         <tr><td><code>make setup</code></td><td>SSOT ハッシュ更新・runtime 初期化</td></tr>
@@ -963,6 +966,31 @@ loop_run.py が次タスクを確認  <span class="comment">← pending があ�
 
 スコア: 45/100
 判定: ERROR — SSOT に重大な問題があります</code></pre>
+    </section>
+
+    <!-- SSOT 編集ワークフロー -->
+    <section id="ssot-edit">
+      <h2><span class="step-badge" style="background:var(--text-muted)">✏</span>SSOT.md を更新する</h2>
+      <p>SSOT.md はループ中の自動編集がブロックされています。設計決定が増えたとき・未定義事項が確定したときは以下の手順で更新します。</p>
+      <div class="alert alert-warn" style="margin:12px 0;">
+        <div class="alert-icon">⚠️</div>
+        <div><strong>Claude だけで判断して SSOT を変えてはいけません。</strong> 必ず人間との会話内で合意を取ってから編集してください。</div>
+      </div>
+
+      <h3 style="margin-top:20px;">手順</h3>
+      <table>
+        <tr><th>ステップ</th><th>操作</th></tr>
+        <tr><td>① 合意</td><td>チャット内でだいすけと編集内容を確認・合意する</td></tr>
+        <tr><td>② 開始</td><td><code>make ssot-edit-start</code>（バックアップ取得 + ゲート解除）</td></tr>
+        <tr><td>③ 編集</td><td>SSOT.md を最小差分で編集する（該当セクションに追記）</td></tr>
+        <tr><td>④ 終了</td><td><code>make ssot-edit-end</code>（ゲート再有効化 + ハッシュ更新）</td></tr>
+      </table>
+
+      <h3 style="margin-top:20px;">バックアップについて</h3>
+      <p><code>make ssot-edit-start</code> を実行すると <code>runtime/ssot_backup_YYYYMMDD_HHMMSS.md</code> に自動保存されます。<br>
+      誤って SSOT を壊してしまった場合は <code>runtime/</code> フォルダ内の最新バックアップを参照してください。</p>
+      <pre><code><span class="comment"># バックアップ一覧を確認する例（PowerShell）</span>
+ls runtime/ssot_backup_*.md | Sort-Object LastWriteTime</code></pre>
     </section>
 
     <!-- チェックポイント -->

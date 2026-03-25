@@ -4,7 +4,7 @@
 #
 # 入口: loop-start / loop-stop / loop-status / setup
 
-.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check ssot-unlock ssot-lock diagnose test help
+.PHONY: loop-start loop-start-detach loop-run loop-stop loop-status setup ssot-check ssot-edit-start ssot-edit-end ssot-fix diagnose test help codex-enable codex-disable
 
 ## ループ開始（同じウィンドウ — Hook の stdin/stdout が正しく動く）
 loop-start:
@@ -38,12 +38,13 @@ test:
 ssot-check:
 	python tools/scripts/ssot_check.py
 
-## SSOT-GATE を一時解除（Claude が SSOT.md を直接編集できるようになる）
-ssot-unlock:
+## SSOT 編集モード開始（バックアップ取得 + ゲート解除）
+ssot-edit-start:
+	python -c "import shutil,datetime,pathlib; pathlib.Path('runtime').mkdir(exist_ok=True); dest=f'runtime/ssot_backup_{datetime.datetime.now().strftime(\"%Y%m%d_%H%M%S\")}.md'; shutil.copy('SSOT.md', dest); print(f'✅ バックアップ: {dest}')"
 	python .claude/hooks/ssot_gate.py --disable
 
-## SSOT-GATE を再有効化 + ハッシュ更新（ssot-unlock の後に必ず実行）
-ssot-lock:
+## SSOT 編集モード終了（ゲート再有効化 + ハッシュ更新）
+ssot-edit-end:
 	python .claude/hooks/ssot_gate.py --enable
 
 ## ハッシュ不一致エラーを修復（誤送信・強制停止後にエラーが出たら実行）

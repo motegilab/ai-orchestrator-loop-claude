@@ -17,16 +17,26 @@ Claude-First AI Orchestrator Loop のテンプレートリポジトリ。
 4. **Report**: 結果をreport Skillで記録する。Stop前に必ず実行する
 
 ## 絶対ルール（Hookで強制される）
-- SSOT.mdを編集しない
-- policy/ssot_integrity.jsonを編集しない
+- SSOT.mdを人間の合意なしに編集しない（下記ワークフロー参照）
+- policy/ssot_integrity.jsonを直接編集しない
 - runtime/以外にランタイム生成物を置かない
 - 1ループで複数原因を修正しない
 
+## SSOT.md 更新ワークフロー
+設計決定が増えたとき・未定義事項が確定したときに実施する。
+
+1. 会話内でだいすけと合意を取る
+2. `make ssot-edit-start`（バックアップ取得 + ゲート解除）
+3. SSOT.md を編集（最小差分・該当セクションに追記）
+4. `make ssot-edit-end`（ゲート再有効化 + ハッシュ更新）
+
 ## コマンド
 ```
-make loop-start   # ループ開始
-make loop-status  # 状態確認
-make loop-stop    # 停止
+make loop-start      # ループ開始
+make loop-status     # 状態確認
+make loop-stop       # 停止
+make ssot-edit-start # SSOT編集モード開始（バックアップ自動取得）
+make ssot-edit-end   # SSOT編集モード終了（ハッシュ更新）
 ```
 
 ## ファイル構成
