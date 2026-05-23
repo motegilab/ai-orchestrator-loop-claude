@@ -1,0 +1,23 @@
+{
+  "_comment": "監視対象。url を実際の商品ページに合わせて足し引きする。available/unavailable は省略時 monitor.py の DEFAULT_* が使われる。unavailable に1つでも一致したら『受付なし』、なければ available 一致で『受付中』、どちらも無ければ unknown（手動確認）。",
+  "poll_interval_sec": 180,
+  "jitter_sec": 45,
+  "targets": [
+    {
+      "name": "トイザらス Orange Tropics",
+      "url": "https://www.toysrus.co.jp/ja-jp/8291969-10141497.html"
+    },
+    {
+      "name": "イオン White Glacier",
+      "url": "https://aeonretail.com/product/0/P-4582770015775/P-458277001577501/"
+    },
+    {
+      "name": "イオン Orange Tropics Premium Set",
+      "url": "https://aeonretail.com/product/0/P-4582770018790/"
+    },
+    {
+      "name": "ヤマダ たまパラ特設",
+      "url": "https://www.yamada-denkiweb.com/event/tmgtpara/"
+    }
+  ]
+}
