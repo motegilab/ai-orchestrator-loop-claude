@@ -7,23 +7,25 @@
 【重要】Claude のクラウド実行環境ではネット送信が全遮断されるため動かない。
         必ず自分のPC（通常のネット接続あり）で実行すること。
 
+取得エンジン:
+    --engine requests   (既定) 軽量。ただし大手リテールは Bot 対策で 403 になりがち。
+    --engine playwright  実ブラウザ(Chromium)でページを開くので 403 を回避しやすい。
+                         事前に:  pip install playwright
+                                  playwright install chromium
+
 使い方:
     cd tools/tamagotchi_monitor
-    python3 monitor.py                       # targets.json を使って巡回
-    python3 monitor.py --once                # 1回だけ巡回して結果表示（動作確認用）
-    python3 monitor.py --interval 120        # 巡回間隔(秒)を上書き
-    TAMA_DISCORD_WEBHOOK=https://discord.com/api/webhooks/... python3 monitor.py
-        # 受付中になったら Discord にも通知（リポジトリの notifications.json の
-        #  discord.webhook_url があれば自動でそれも使う）
+    python monitor.py --engine playwright --once     # まず1回で動作確認
+    python monitor.py --engine playwright            # 本番巡回（Ctrl+Cで停止）
+    python monitor.py --interval 120                 # 巡回間隔(秒)を上書き
+    set TAMA_DISCORD_WEBHOOK=https://discord.com/api/webhooks/...   # (Windows) Discord通知
+        # 受付中になったら Discord にも通知。リポジトリの notifications.json に
+        # discord.webhook_url があればそれも自動利用。
 
 判定ルール（targets.json で個別上書き可）:
     - unavailable キーワードに1つでも一致 → 受付なし
     - 上記なし & available キーワードに一致 → 受付中（通知対象）
     - どちらも一致しない → unknown（ページ構造が変わった等。手動確認を促す）
-
-依存: requests のみ（pip install requests）。
-JS描画でしか在庫が出ない/Bot対策が強いサイト(Amazon・楽天等)は requests では
-403/503 になりやすい。その場合は末尾の「Playwrightで強化」コメントを参照。
 """
 from __future__ import annotations
 
@@ -42,12 +44,12 @@ HERE = Path(__file__).resolve().parent
 TARGETS_FILE = HERE / "targets.json"
 STATE_FILE = HERE / "state.json"
 
-# だいすけさんの環境でブロックされにくいよう実ブラウザ風のヘッダを送る
+UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": UA,
     "Accept-Language": "ja,en-US;q=0.8,en;q=0.5",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 }
@@ -98,16 +100,72 @@ def classify(html: str, target: dict) -> tuple[str, list[str]]:
     return UNKNOWN, []
 
 
-def check(target: dict, session: requests.Session) -> tuple[str, str]:
-    try:
-        resp = session.get(target["url"], headers=HEADERS, timeout=20)
-    except requests.RequestException as e:
-        return ERROR, f"接続失敗: {e.__class__.__name__}"
-    if resp.status_code in (403, 503, 429):
-        return ERROR, f"HTTP {resp.status_code}（Bot対策の可能性／Playwright推奨）"
-    if resp.status_code != 200:
-        return ERROR, f"HTTP {resp.status_code}"
-    status, hits = classify(resp.text, target)
+# --- 取得エンジン: fetch(url) -> ("ok", html) | ("error", メッセージ) ---
+
+class RequestsFetcher:
+    def __init__(self) -> None:
+        self.session = requests.Session()
+
+    def fetch(self, url: str) -> tuple[str, str]:
+        try:
+            resp = self.session.get(url, headers=HEADERS, timeout=20)
+        except requests.RequestException as e:
+            return ERROR, f"接続失敗: {e.__class__.__name__}"
+        if resp.status_code in (403, 503, 429):
+            return ERROR, f"HTTP {resp.status_code}（Bot対策／--engine playwright を試す）"
+        if resp.status_code != 200:
+            return ERROR, f"HTTP {resp.status_code}"
+        return "ok", resp.text
+
+    def close(self) -> None:
+        self.session.close()
+
+
+class PlaywrightFetcher:
+    def __init__(self) -> None:
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            sys.exit(
+                "Playwright が未インストールです。次を実行してください:\n"
+                "    pip install playwright\n"
+                "    playwright install chromium"
+            )
+        self._pw = sync_playwright().start()
+        try:
+            self._browser = self._pw.chromium.launch(headless=True)
+        except Exception:
+            self._pw.stop()
+            sys.exit(
+                "Chromium が見つかりません。次を実行してください:\n"
+                "    playwright install chromium"
+            )
+        self._context = self._browser.new_context(
+            locale="ja-JP", user_agent=UA, viewport={"width": 1280, "height": 900}
+        )
+
+    def fetch(self, url: str) -> tuple[str, str]:
+        page = self._context.new_page()
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            page.wait_for_timeout(1800)  # JS描画/在庫表示の反映待ち
+            return "ok", page.content()
+        except Exception as e:  # TimeoutError 等で1件失敗しても巡回は続行
+            return ERROR, f"取得失敗: {e.__class__.__name__}"
+        finally:
+            page.close()
+
+    def close(self) -> None:
+        self._context.close()
+        self._browser.close()
+        self._pw.stop()
+
+
+def check(target: dict, fetcher) -> tuple[str, str]:
+    kind, payload = fetcher.fetch(target["url"])
+    if kind == ERROR:
+        return ERROR, payload
+    status, hits = classify(payload, target)
     detail = ("一致: " + ", ".join(hits)) if hits else "判定キーワード未検出"
     return status, detail
 
@@ -141,10 +199,10 @@ def notify(name: str, url: str, detail: str) -> None:
             print(f"  ! Discord通知失敗: {e.__class__.__name__}", flush=True)
 
 
-def run_once(targets: list[dict], state: dict, session: requests.Session) -> None:
+def run_once(targets: list[dict], state: dict, fetcher) -> None:
     for t in targets:
         name, url = t["name"], t["url"]
-        status, detail = check(t, session)
+        status, detail = check(t, fetcher)
         prev = state.get(url, {}).get("status")
         mark = {AVAILABLE: "🟢", UNAVAILABLE: "⚪", UNKNOWN: "🟡", ERROR: "🔴"}[status]
         print(f"[{now()}] {mark} {status:<11} {name}  ({detail})", flush=True)
@@ -157,6 +215,8 @@ def run_once(targets: list[dict], state: dict, session: requests.Session) -> Non
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="たまごっちパラダイス予約 巡回監視")
+    ap.add_argument("--engine", choices=["requests", "playwright"], default="requests",
+                    help="取得エンジン。大手リテールは playwright 推奨")
     ap.add_argument("--once", action="store_true", help="1回だけ巡回して終了")
     ap.add_argument("--interval", type=int, help="巡回間隔(秒) を上書き")
     args = ap.parse_args()
@@ -169,32 +229,25 @@ def main() -> int:
     interval = args.interval or conf.get("poll_interval_sec", 180)
     jitter = conf.get("jitter_sec", 30)
     state = load_state()
-    session = requests.Session()
+    fetcher = PlaywrightFetcher() if args.engine == "playwright" else RequestsFetcher()
 
-    print(f"監視対象 {len(targets)} 件 / 間隔 {interval}±{jitter}秒 / "
-          f"Discord通知: {'ON' if discord_webhook() else 'OFF'}")
-    if args.once:
-        run_once(targets, state, session)
-        return 0
+    print(f"監視対象 {len(targets)} 件 / engine={args.engine} / "
+          f"間隔 {interval}±{jitter}秒 / Discord通知: {'ON' if discord_webhook() else 'OFF'}")
     try:
+        if args.once:
+            run_once(targets, state, fetcher)
+            return 0
         while True:
-            run_once(targets, state, session)
+            run_once(targets, state, fetcher)
             wait = interval + random.uniform(0, jitter)
             print(f"--- 次の巡回まで {wait:.0f} 秒待機 (Ctrl+C で停止) ---", flush=True)
             time.sleep(wait)
     except KeyboardInterrupt:
         print("\n停止しました。")
         return 0
+    finally:
+        fetcher.close()
 
 
 if __name__ == "__main__":
     sys.exit(main())
-
-# --- Playwrightで強化したい場合（Amazon/楽天などBot対策が強いサイト向け） ---
-# pip install playwright && playwright install chromium
-# check() の中身を、requests.get の代わりに
-#   from playwright.sync_api import sync_playwright
-#   with sync_playwright() as p:
-#       b = p.chromium.launch(); pg = b.new_page(); pg.goto(url, timeout=30000)
-#       html = pg.content(); b.close()
-# に差し替えれば、JS描画後のHTMLで classify() 判定できる。
